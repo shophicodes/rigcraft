@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "982387784101",
+    "project_id": "rigcraft-9c241",
+    "storage_bucket": "rigcraft-9c241.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982387784101:android:8065f636debe0028e9504c",
+        "android_client_info": {
+          "package_name": "com.example.rigcraft"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCU8rwo7oyFsqqCp-WNhJ0Ao4OTSOFSViw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
