@@ -12,19 +12,43 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.runtime.collectAsState
+import com.example.rigcraft.R
+import com.example.rigcraft.ui.feature.auth.AuthViewModel
 import com.example.rigcraft.ui.navigation.NavGraph
 import com.example.rigcraft.ui.navigation.Screen
 import com.example.rigcraft.ui.theme.RigCraftTheme
 
 @Composable
 fun MainScreen(
-    navController: NavHostController = rememberNavController()
+    navController: NavHostController = rememberNavController(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
+    val isUserLoggedIn by authViewModel.isUserLoggedIn.collectAsState()
+
+    MainScreenContent(
+        navController = navController,
+        isUserLoggedIn = isUserLoggedIn
+    )
+}
+
+@Composable
+fun MainScreenContent(
+    navController: NavHostController,
+    isUserLoggedIn: Boolean?
+) {
+    if (isUserLoggedIn == null) {
+        // Loading state
+        return
+    }
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -33,7 +57,7 @@ fun MainScreen(
 
     Scaffold(
         bottomBar = {
-            if (showBottomBar) {
+            if (showBottomBar && isUserLoggedIn) {
                 NavigationBar {
                     Screen.bottomNavItems.forEach { screen ->
                         NavigationBarItem(
@@ -53,7 +77,7 @@ fun MainScreen(
                                         if (screen.badgeCount != null && screen.badgeCount > 0) {
                                             Badge {
                                                 val countText =
-                                                    if (screen.badgeCount > 99) "99+" else screen.badgeCount.toString()
+                                                    if (screen.badgeCount > 99) stringResource(R.string.badge_max_count) else screen.badgeCount.toString()
                                                 Text(text = countText)
                                             }
                                         }
@@ -61,7 +85,7 @@ fun MainScreen(
                                 ) {
                                     Icon(
                                         painter = painterResource(id = screen.iconRes),
-                                        contentDescription = screen.title
+                                        contentDescription = stringResource(screen.titleRes)
                                     )
                                 }
                             }
@@ -73,15 +97,19 @@ fun MainScreen(
     ) { innerPadding ->
         NavGraph(
             navController = navController,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            startDestination = if (isUserLoggedIn) Screen.Home.route else Screen.Login.route
         )
     }
 }
 
 @Composable
-@Preview
+@Preview(showBackground = true)
 fun MainScreenPreview() {
     RigCraftTheme {
-        MainScreen()
+        MainScreenContent(
+            navController = rememberNavController(),
+            isUserLoggedIn = true
+        )
     }
 }
