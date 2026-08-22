@@ -2,7 +2,9 @@ package com.example.rigcraft.ui.feature.auth
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -26,6 +28,7 @@ import com.example.rigcraft.util.Resource
 fun RegisterScreen(
     viewModel: AuthViewModel,
     onNavigateToLogin: () -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     val authState by viewModel.authState.collectAsState()
     val uiState by viewModel.registerUiState.collectAsState()
@@ -33,7 +36,8 @@ fun RegisterScreen(
     LaunchedEffect(authState) {
         if (authState is Resource.Success) {
             viewModel.resetAuthState()
-            onNavigateToLogin()
+            viewModel.updateLoginStatus(true)
+            onNavigateToHome()
         }
     }
 
@@ -83,7 +87,9 @@ internal fun RegisterScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(dimensionResource(R.dimen.padding_medium)),
+                .padding(dimensionResource(R.dimen.padding_medium))
+                .imePadding()
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {

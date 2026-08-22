@@ -70,6 +70,13 @@ fun NavGraph(
                 viewModel = authViewModel,
                 onNavigateToLogin = {
                     navController.popBackStack()
+                },
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Register.route) {
+                            inclusive = true
+                        }
+                    }
                 }
             )
         }

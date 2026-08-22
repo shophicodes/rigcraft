@@ -99,8 +99,10 @@ class AuthViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            userPreferences.saveRememberMe(rememberMe, state.email)
             repository.login(state.email, state.password).collect { result ->
+                if (result is Resource.Success) {
+                    userPreferences.saveRememberMe(rememberMe, state.email)
+                }
                 _authState.value = result
             }
         }
@@ -145,5 +147,9 @@ class AuthViewModel @Inject constructor(
 
     fun resetAuthState() {
         _authState.value = Resource.Idle
+    }
+
+    fun updateLoginStatus(isLoggedIn: Boolean) {
+        _isUserLoggedIn.value = isLoggedIn
     }
 }

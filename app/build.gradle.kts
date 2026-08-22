@@ -53,7 +53,6 @@ dependencies {
 
     // Navigation Compose
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.androidx.ui)
 
     // Dependency Injection (Hilt)
     implementation(libs.hilt.android)

@@ -44,18 +44,24 @@ class AuthRepositoryImpl @Inject constructor(
             // Write user data to "users" collection in Firestore
             val uid = account.user?.uid ?: throw Exception("User creation failed")
 
-            firestore.collection("users")
-                .document(uid)
-                .set(
-                    UserDto(
-                        uid = uid,
-                        email = email,
-                        displayName = displayName,
-                        createdAt = Timestamp.now()
+            try {
+                firestore.collection("users")
+                    .document(uid)
+                    .set(
+                        UserDto(
+                            uid = uid,
+                            email = email,
+                            displayName = displayName,
+                            createdAt = Timestamp.now()
                         )
                     )
-                .await()
+                    .await()
                 emit(Resource.Success(true))
+            } catch (e: Exception) {
+                // Delete the newly created Firebase user if profile persistence fails
+                account.user?.delete()?.await()
+                throw e
+            }
         }
         catch(e: Exception) {
             emit(Resource.Error(e.message ?: "Sign up error"))

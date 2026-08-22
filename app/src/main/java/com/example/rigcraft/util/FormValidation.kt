@@ -61,7 +61,7 @@ object FormValidation {
         if(password != confirmPass) {
             return ValidationResult(
                 isValid = false,
-                errorMessage = "Wrong password. Try Again."
+                errorMessage = "Passwords do not match."
             )
         }
         return ValidationResult(isValid = true)
