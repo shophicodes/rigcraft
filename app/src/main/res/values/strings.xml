@@ -27,4 +27,11 @@
     <string name="home_welcome">Welcome to RigCraft!</string>
     <string name="home_test_description">This is a simple home screen for testing.</string>
     <string name="logout_button">Logout</string>
+    <string name="home_categories">Categories</string>
+    <string name="home_recently_added">Recently Added</string>
+    <string name="home_deals_and_sales">Current Deals &amp; Sales</string>
+    <string name="label_see_all">See All</string>
+    <string name="currency_rsd">RSD</string>
+    <string name="discount_format">-%1$d%%</string>
+    <string name="price_format">%1$.2f %2$s</string>
 </resources>

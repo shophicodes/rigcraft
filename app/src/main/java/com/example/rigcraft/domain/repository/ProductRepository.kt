@@ -7,7 +7,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
     fun getCategories(): Flow<Resource<List<CategoryDto>>>
-    fun getFeaturedProducts(): Flow<Resource<List<ProductDto>>>
+    fun getRecentProducts(): Flow<Resource<List<ProductDto>>>
+    fun getProductsOnSale(): Flow<Resource<List<ProductDto>>>
     fun getProductsByCategory(categoryId: String): Flow<Resource<List<ProductDto>>>
     fun getFilteredProducts(
         categoryId: String?,

@@ -34,11 +34,13 @@ class HomeViewModel @Inject constructor(
 
             combine(
                 repository.getCategories(),
-                repository.getFeaturedProducts()
-            ) { categoriesRes, featuredRes ->
+                repository.getRecentProducts(),
+                repository.getProductsOnSale()
+            ) { categoriesRes, recentRes, saleRes ->
                 var error: String? = null
                 var categories = emptyList<CategoryDto>()
-                var featured = emptyList<ProductDto>()
+                var recent = emptyList<ProductDto>()
+                var sale = emptyList<ProductDto>()
 
                 when(categoriesRes) {
                     is Resource.Success -> categories = categoriesRes.data
@@ -46,16 +48,23 @@ class HomeViewModel @Inject constructor(
                     else -> {}
                 }
 
-                when(featuredRes) {
-                    is Resource.Success -> featured = featuredRes.data
-                    is Resource.Error -> error = featuredRes.message
+                when (recentRes) {
+                    is Resource.Success -> recent = recentRes.data
+                    is Resource.Error -> error = recentRes.message
+                    else -> {}
+                }
+
+                when (saleRes) {
+                    is Resource.Success -> sale = saleRes.data
+                    is Resource.Error -> error = saleRes.message
                     else -> {}
                 }
 
                 HomeUiState(
                     isLoading = false,
                     categories = categories,
-                    featuredProducts = featured,
+                    recentProducts = recent,
+                    saleProducts = sale,
                     errorMessage = error
                 )
             }.collect { newState ->

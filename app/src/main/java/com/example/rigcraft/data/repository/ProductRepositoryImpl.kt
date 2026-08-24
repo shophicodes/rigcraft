@@ -31,8 +31,25 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    // Fetch featured products
-    override fun getFeaturedProducts(): Flow<Resource<List<ProductDto>>> = flow {
+    // Fetch recently added products
+    override fun getRecentProducts(): Flow<Resource<List<ProductDto>>> = flow {
+        emit(Resource.Loading)
+        try {
+            val snapshot = firestore.collection("products")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .limit(6)
+                .get()
+                .await()
+            val products = snapshot.toObjects(ProductDto::class.java)
+            emit(Resource.Success(products))
+        }
+        catch(e: Exception) {
+            emit(Resource.Error(e.message ?: "Failed to fetch recent products"))
+        }
+    }
+
+    // Fetch products that are on sale
+    override fun getProductsOnSale(): Flow<Resource<List<ProductDto>>> = flow {
         emit(Resource.Loading)
         try {
             val snapshot = firestore.collection("products")
@@ -43,8 +60,8 @@ class ProductRepositoryImpl @Inject constructor(
             val products = snapshot.toObjects(ProductDto::class.java)
             emit(Resource.Success(products))
         }
-        catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to fetch featured products"))
+        catch(e: Exception) {
+            emit(Resource.Error(e.message ?: "Failed to fetch recent products"))
         }
     }
 

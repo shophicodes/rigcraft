@@ -6,4 +6,13 @@
     <dimen name="logo_size">96dp</dimen>
     <dimen name="progress_indicator_size">24dp</dimen>
     <dimen name="progress_indicator_stroke">2dp</dimen>
+    <dimen name="padding_extra_small">4dp</dimen>
+    <dimen name="padding_spaced_by">12dp</dimen>
+    <dimen name="category_item_size">64dp</dimen>
+    <dimen name="category_text_size">12sp</dimen>
+    <dimen name="product_card_width">160dp</dimen>
+    <dimen name="product_card_corner_radius">12dp</dimen>
+    <dimen name="product_image_height">110dp</dimen>
+    <dimen name="badge_padding_horizontal">6dp</dimen>
+    <dimen name="badge_padding_vertical">2dp</dimen>
 </resources>

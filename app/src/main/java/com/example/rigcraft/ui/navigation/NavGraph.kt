@@ -7,7 +7,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.rigcraft.ui.feature.auth.AuthViewModel
 import com.example.rigcraft.ui.feature.auth.LoginScreen
@@ -81,16 +80,7 @@ fun NavGraph(
             )
         }
         composable(route = Screen.Home.route) {
-            HomeScreen(
-                onLogout = {
-                    authViewModel.logout()
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(navController.graph.id) {
-                            inclusive = true
-                        }
-                    }
-                }
-            )
+            HomeScreen()
         }
         composable(route = Screen.Wishlist.route) {}
         composable(route = Screen.Search.route) {}
