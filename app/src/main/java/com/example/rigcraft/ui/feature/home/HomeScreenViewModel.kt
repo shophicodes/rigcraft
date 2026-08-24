@@ -15,7 +15,7 @@ class HomeScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     init {
-        seedMockData()
+        // seedMockData()
     }
 
     private fun seedMockData() {
