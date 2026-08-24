@@ -18,7 +18,7 @@ import com.example.rigcraft.R
 @Composable
 fun HomeScreen(
     onLogout: () -> Unit,
-    viewModel: HomeScreenViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     Column(
         modifier = Modifier
