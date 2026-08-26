@@ -207,6 +207,30 @@ fun ProductDetailsScreen(
 
                     Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 
+                    // Price Tag
+                    val finalPrice = if (product.discountPercent > 0) {
+                        product.price * (1 - product.discountPercent / 100.0)
+                    } else product.price
+
+                    Column {
+                        Text(
+                            text = stringResource(R.string.price_format, finalPrice, stringResource(R.string.currency_rsd)),
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                        if (product.discountPercent > 0) {
+                            Text(
+                                text = stringResource(R.string.price_format, product.price, stringResource(R.string.currency_rsd)),
+                                style = MaterialTheme.typography.bodyMedium,
+                                textDecoration = TextDecoration.LineThrough,
+                                color = Color.Gray
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
+
                     // Specifications List
                     Text(
                         text = stringResource(R.string.title_technical_specifications),
@@ -287,10 +311,6 @@ fun AddToCartBottomBar(
     onDecrement: () -> Unit,
     onAddToCartClick: () -> Unit
 ) {
-    val finalPrice = if (product.discountPercent > 0) {
-        product.price * (1 - product.discountPercent / 100.0)
-    } else product.price
-
     Surface(
         shadowElevation = dimensionResource(R.dimen.padding_small),
         color = MaterialTheme.colorScheme.surface
@@ -302,24 +322,6 @@ fun AddToCartBottomBar(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Price & Discount Display
-            Column {
-                Text(
-                    text = stringResource(R.string.price_format, finalPrice * quantity, stringResource(R.string.currency_rsd)),
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                if (product.discountPercent > 0) {
-                    Text(
-                        text = stringResource(R.string.price_format, product.price * quantity, stringResource(R.string.currency_rsd)),
-                        style = MaterialTheme.typography.bodySmall,
-                        textDecoration = TextDecoration.LineThrough,
-                        color = Color.Gray
-                    )
-                }
-            }
-
             // Quantity Selector
             Row(
                 verticalAlignment = Alignment.CenterVertically,
