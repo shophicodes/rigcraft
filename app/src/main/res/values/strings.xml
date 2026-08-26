@@ -27,4 +27,22 @@
     <string name="home_welcome">Welcome to RigCraft!</string>
     <string name="home_test_description">This is a simple home screen for testing.</string>
     <string name="logout_button">Logout</string>
+    <string name="home_categories">Categories</string>
+    <string name="home_recently_added">Recently Added</string>
+    <string name="home_deals_and_sales">Current Deals &amp; Sales</string>
+    <string name="label_see_all">See All</string>
+    <string name="currency_rsd">RSD</string>
+    <string name="discount_format">-%1$d%%</string>
+    <string name="price_format">%1$.2f %2$s</string>
+    <string name="label_back">Back</string>
+    <string name="label_rating">Rating</string>
+    <string name="product_rating_format">%1$.1f (%2$d reviews)</string>
+    <string name="product_in_stock_format">In Stock (%1$d)</string>
+    <string name="product_out_of_stock">Out of Stock</string>
+    <string name="title_technical_specifications">Technical Specifications</string>
+    <string name="label_decrease">Decrease</string>
+    <string name="label_increase">Increase</string>
+    <string name="label_add_to_cart">Add to Cart</string>
+    <string name="label_retry">Retry</string>
+    <string name="error_product_unavailable">This product is currently unavailable</string>
 </resources>
