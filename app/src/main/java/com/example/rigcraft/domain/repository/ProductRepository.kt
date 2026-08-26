@@ -20,4 +20,5 @@ interface ProductRepository {
         categoryId: String?,
         specFilters: Map<String, String> // For example: mapOf("Socket" to "AM4", "VRAM" to "8GB")
     ): Flow<Resource<List<ProductDto>>>
+    fun getProductById(productId: String): Flow<Resource<ProductDto?>>
 }

@@ -8,9 +8,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.example.rigcraft.ui.feature.auth.AuthViewModel
 import com.example.rigcraft.ui.feature.auth.LoginScreen
 import com.example.rigcraft.ui.feature.auth.RegisterScreen
+import com.example.rigcraft.ui.feature.details.ProductDetailsScreen
 import com.example.rigcraft.ui.feature.home.HomeScreen
 
 @Composable
@@ -80,7 +83,25 @@ fun NavGraph(
             )
         }
         composable(route = Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                onProductClick = { productId ->
+                    navController.navigate(Screen.ProductDetails.createRoute(productId))
+                }
+            )
+        }
+        composable(
+            route = Screen.ProductDetails.route,
+            arguments = listOf(
+                navArgument("productId") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            ProductDetailsScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                }
+            )
         }
         composable(route = Screen.Wishlist.route) {}
         composable(route = Screen.Search.route) {}

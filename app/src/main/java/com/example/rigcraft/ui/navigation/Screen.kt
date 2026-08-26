@@ -21,6 +21,10 @@ sealed class Screen(
     object Login: Screen("login", R.string.nav_login, 0)
     object Register: Screen("register", R.string.nav_register, 0)
 
+    // Product Details
+    object ProductDetails : Screen("details/{productId}", 0, 0) {
+        fun createRoute(productId: String) = "details/$productId"
+    }
     companion object {
         val bottomNavItems = listOf(Home, Wishlist, Search, Cart, Profile)
     }

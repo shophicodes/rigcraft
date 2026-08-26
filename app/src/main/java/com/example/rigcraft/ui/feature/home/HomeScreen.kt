@@ -94,7 +94,12 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_spaced_by))
             ) {
                 items(state.recentProducts.take(6)) { product ->
-                    ProductCard(product = product, onProductClick = onProductClick)
+                    ProductCard(
+                        product = product,
+                        onProductClick = { selectedId ->
+                            onProductClick(selectedId)
+                        }
+                    )
                 }
             }
 
@@ -113,7 +118,12 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_spaced_by))
             ) {
                 items(state.saleProducts.take(6)) { product ->
-                    ProductCard(product = product, onProductClick = onProductClick)
+                    ProductCard(
+                        product = product,
+                        onProductClick = { selectedId ->
+                            onProductClick(selectedId)
+                        }
+                    )
                 }
             }
         }

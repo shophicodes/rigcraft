@@ -30,7 +30,7 @@ abstract class RepositoryModule {
 
     @Binds
     @Singleton
-    abstract fun binProductRepository(
+    abstract fun bindProductRepository(
         impl: ProductRepositoryImpl
     ): ProductRepository
 }

@@ -143,4 +143,20 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Error(e.message ?: "Failed to filter products by specifications"))
         }
     }
+
+    // Fetch product by its ID
+    override fun getProductById(productId: String): Flow<Resource<ProductDto?>> = flow {
+        emit(Resource.Loading)
+        try {
+            val snapshot = firestore.collection("products")
+                .document(productId)
+                .get()
+                .await()
+            val product = snapshot.toObject(ProductDto::class.java)
+            emit(Resource.Success(product))
+        }
+        catch (e: Exception) {
+            emit(Resource.Error(e.message ?: "Failed to get product by ID"))
+        }
+    }
 }

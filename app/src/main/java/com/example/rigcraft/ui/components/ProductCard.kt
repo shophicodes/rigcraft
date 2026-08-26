@@ -2,6 +2,7 @@ package com.example.rigcraft.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,9 +28,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 import com.example.rigcraft.R
 import com.example.rigcraft.data.model.ProductDto
+import com.example.rigcraft.ui.theme.RigCraftTheme
 
 @Composable
 fun ProductCard(
@@ -44,7 +47,7 @@ fun ProductCard(
         shape = RoundedCornerShape(dimensionResource(R.dimen.product_card_corner_radius)),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_small))) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -92,7 +95,7 @@ fun ProductCard(
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
 
             // Pricing Row
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Column(verticalArrangement = Arrangement.SpaceBetween) {
                 val finalPrice = if (product.discountPercent > 0) {
                     product.price * (1 - product.discountPercent / 100.0)
                 } else product.price
@@ -103,9 +106,8 @@ fun ProductCard(
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
-
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_extra_small)))
                 if (product.discountPercent > 0) {
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_extra_small)))
                     Text(
                         text = stringResource(R.string.price_format, product.price, stringResource(R.string.currency_rsd)),
                         style = MaterialTheme.typography.labelSmall,
@@ -113,7 +115,24 @@ fun ProductCard(
                         color = Color.Gray
                     )
                 }
+                else {
+                    Text(
+                        text = "",
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+fun ProductCardPreview() {
+    RigCraftTheme {
+        ProductCard(
+            product = ProductDto(),
+            onProductClick = {}
+        )
     }
 }
