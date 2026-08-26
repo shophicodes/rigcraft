@@ -206,6 +206,7 @@ object MockDataSeeder {
             categoryId = "computer-hardware",
             subcategoryId = "gpus",
             price = 599.0,
+            discountPercent = 15,
             inStock = true,
             stockQuantity = 25,
             images = listOf(
@@ -299,9 +300,7 @@ object MockDataSeeder {
             inStock = true,
             stockQuantity = 80,
             images = listOf(
-                "https://ik.imagekit.io/rel0t282g/tr:w-800,h-800,q-80,f-auto/rigcraft/products/computer-hardware/ram/kingston-fury-beast-64gb-ddr5-6400-cl32/FURY_Beast_Black_DDR5_2_angle-zm-lg.webp",
-                "https://ik.imagekit.io/rel0t282g/tr:w-800,h-800,q-80,f-auto/rigcraft/products/computer-hardware/ram/kingston-fury-beast-64gb-ddr5-6400-cl32/FURY_Beast_Black_DDR5_1-zm-lg.webp",
-                "https://ik.imagekit.io/rel0t282g/tr:w-800,h-800,q-80,f-auto/rigcraft/products/computer-hardware/ram/kingston-fury-beast-64gb-ddr5-6400-cl32/FURY_Beast_Black_DDR5_2_pkg-zm-lg.jpg",
+                "https://ik.imagekit.io/rel0t282g/tr:w-800,h-800,q-80,f-auto/rigcraft/products/computer-hardware/ram/corsair-vengeance-rgb-32gb-ddr5-6000-cl30/VENGEANCE_RGB_DDR5_BLK_01.avif",
             ),
             specifications = mapOf(
                 "Capacity" to "32 GB",
@@ -321,7 +320,9 @@ object MockDataSeeder {
             inStock = true,
             stockQuantity = 35,
             images = listOf(
-                "https://ik.imagekit.io/rel0t282g/tr:w-800,h-800,q-80,f-auto/rigcraft/products/computer-hardware/ram/corsair-vengeance-rgb-32gb-ddr5-6000-cl30/VENGEANCE_RGB_DDR5_BLK_01.avif",
+                "https://ik.imagekit.io/rel0t282g/tr:w-800,h-800,q-80,f-auto/rigcraft/products/computer-hardware/ram/kingston-fury-beast-64gb-ddr5-6400-cl32/FURY_Beast_Black_DDR5_2_angle-zm-lg.webp",
+                "https://ik.imagekit.io/rel0t282g/tr:w-800,h-800,q-80,f-auto/rigcraft/products/computer-hardware/ram/kingston-fury-beast-64gb-ddr5-6400-cl32/FURY_Beast_Black_DDR5_1-zm-lg.webp",
+                "https://ik.imagekit.io/rel0t282g/tr:w-800,h-800,q-80,f-auto/rigcraft/products/computer-hardware/ram/kingston-fury-beast-64gb-ddr5-6400-cl32/FURY_Beast_Black_DDR5_2_pkg-zm-lg.jpg",
             ),
             specifications = mapOf(
                 "Capacity" to "64 GB",

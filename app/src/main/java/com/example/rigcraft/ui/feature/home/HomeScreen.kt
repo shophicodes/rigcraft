@@ -53,6 +53,22 @@ fun HomeScreen(
             CircularProgressIndicator()
         }
     }
+    else if (state.errorMessage != null) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = state.errorMessage!!,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+            )
+            TextButton(onClick = viewModel::retry) {
+                Text(stringResource(R.string.label_retry))
+            }
+        }
+    }
     else {
         Column(
             modifier = Modifier

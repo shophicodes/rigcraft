@@ -4,6 +4,7 @@ import com.example.rigcraft.data.model.CategoryDto
 import com.example.rigcraft.data.model.ProductDto
 import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.util.Resource
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.Flow
@@ -128,10 +129,10 @@ class ProductRepositoryImpl @Inject constructor(
                 query = query.whereEqualTo("categoryId", categoryId)
             }
 
-            // Query map fields dynamically using dot notation
+            // Query map fields dynamically using FieldPath
             specFilters.forEach { (specKey, specValue) ->
                 if (specValue.isNotEmpty()) {
-                    query = query.whereEqualTo("specifications.$specKey", specValue)
+                    query = query.whereEqualTo(FieldPath.of("specifications", specKey), specValue)
                 }
             }
 

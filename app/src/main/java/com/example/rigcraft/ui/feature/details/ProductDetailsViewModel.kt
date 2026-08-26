@@ -32,6 +32,10 @@ class ProductDetailsViewModel @Inject constructor(
         loadProduct()
     }
 
+    fun retry() {
+        loadProduct()
+    }
+
     private fun loadProduct() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
@@ -67,6 +71,16 @@ class ProductDetailsViewModel @Inject constructor(
         val current = _uiState.value.selectedQuantity
         if (current > 1) {
             _uiState.value = _uiState.value.copy(selectedQuantity = current - 1)
+        }
+    }
+
+    fun addToCart() {
+        viewModelScope.launch {
+            val product = _uiState.value.product ?: return@launch
+            val quantity = _uiState.value.selectedQuantity
+            // In a real application, this would call a CartRepository
+            // For now, we simulate success with a toast event
+            _eventFlow.emit(DetailsUiEvent.ShowToast("${product.title} added to cart ($quantity)"))
         }
     }
 }

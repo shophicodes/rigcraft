@@ -28,6 +28,10 @@ class HomeViewModel @Inject constructor(
         loadHomeData()
     }
 
+    fun retry() {
+        loadHomeData()
+    }
+
     fun loadHomeData() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, errorMessage = null)

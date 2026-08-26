@@ -72,6 +72,7 @@ fun ProductDetailsScreen(
                     quantity = state.selectedQuantity,
                     onIncrement = viewModel::incrementQuantity,
                     onDecrement = viewModel::decrementQuantity,
+                    onAddToCartClick = viewModel::addToCart
                 )
             }
         }
@@ -85,7 +86,22 @@ fun ProductDetailsScreen(
             ) {
                 CircularProgressIndicator()
             }
-        } else state.product?.let { product ->
+        } else if (state.errorMessage != null) {
+            ProductErrorState(
+                message = state.errorMessage!!,
+                actionLabel = stringResource(R.string.label_retry),
+                onAction = viewModel::retry,
+                modifier = Modifier.padding(paddingValues)
+            )
+        } else if (state.product == null) {
+            ProductErrorState(
+                message = stringResource(R.string.error_product_unavailable),
+                actionLabel = stringResource(R.string.label_back),
+                onAction = onBackClick,
+                modifier = Modifier.padding(paddingValues)
+            )
+        } else {
+            val product = state.product!!
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -238,6 +254,30 @@ fun ProductDetailsScreen(
     }
 }
 
+@Composable
+fun ProductErrorState(
+    message: String,
+    actionLabel: String,
+    onAction: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.error,
+            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+        )
+        Button(onClick = onAction) {
+            Text(text = actionLabel)
+        }
+    }
+}
+
 // Sticky Bottom Bar Composable
 @Composable
 fun AddToCartBottomBar(
@@ -245,6 +285,7 @@ fun AddToCartBottomBar(
     quantity: Int,
     onIncrement: () -> Unit,
     onDecrement: () -> Unit,
+    onAddToCartClick: () -> Unit
 ) {
     val finalPrice = if (product.discountPercent > 0) {
         product.price * (1 - product.discountPercent / 100.0)
@@ -302,7 +343,7 @@ fun AddToCartBottomBar(
 
             // Add To Cart Button
             Button(
-                onClick = {},
+                onClick = onAddToCartClick,
                 enabled = product.inStock,
                 shape = RoundedCornerShape(dimensionResource(R.dimen.padding_spaced_by)),
                 modifier = Modifier.height(dimensionResource(R.dimen.bottom_bar_item_height))

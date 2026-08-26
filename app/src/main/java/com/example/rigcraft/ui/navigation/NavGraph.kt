@@ -86,6 +86,12 @@ fun NavGraph(
             HomeScreen(
                 onProductClick = { productId ->
                     navController.navigate(Screen.ProductDetails.createRoute(productId))
+                },
+                onCategoryClick = { categoryId ->
+                    navController.navigate(Screen.Catalog.createRoute("category", categoryId))
+                },
+                onSeeAllClick = { filter ->
+                    navController.navigate(Screen.Catalog.createRoute("all", filter))
                 }
             )
         }
@@ -107,5 +113,15 @@ fun NavGraph(
         composable(route = Screen.Search.route) {}
         composable(route = Screen.Cart.route) {}
         composable(route = Screen.Profile.route) {}
+
+        composable(
+            route = Screen.Catalog.route,
+            arguments = listOf(
+                navArgument("filterType") { type = NavType.StringType },
+                navArgument("filterValue") { type = NavType.StringType }
+            )
+        ) {
+            // TODO: Implement Catalog Screen
+        }
     }
 }

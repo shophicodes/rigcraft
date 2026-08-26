@@ -25,6 +25,12 @@ sealed class Screen(
     object ProductDetails : Screen("details/{productId}", 0, 0) {
         fun createRoute(productId: String) = "details/$productId"
     }
+
+    // Catalog / Search Results
+    object Catalog : Screen("catalog/{filterType}/{filterValue}", 0, 0) {
+        fun createRoute(type: String, value: String) = "catalog/$type/$value"
+    }
+
     companion object {
         val bottomNavItems = listOf(Home, Wishlist, Search, Cart, Profile)
     }
