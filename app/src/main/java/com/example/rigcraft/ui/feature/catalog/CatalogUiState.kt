@@ -9,7 +9,6 @@ data class CatalogUiState(
     val selectedCategoryId: String? = null,
     val selectedSubcategoryId: String? = null,
     val products: List<ProductDto> = emptyList(),
-    val searchQuery: String = "",
     val minPrice: Double? = null,
     val maxPrice: Double? = null,
     val selectedSortOption: SortOption = SortOption.NEWEST,

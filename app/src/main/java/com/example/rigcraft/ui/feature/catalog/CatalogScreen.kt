@@ -83,26 +83,6 @@ fun CatalogScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Search Bar
-            OutlinedTextField(
-                value = state.searchQuery,
-                onValueChange = viewModel::updateSearchQuery,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        horizontal = dimensionResource(R.dimen.padding_medium),
-                        vertical = dimensionResource(R.dimen.padding_small)
-                    ),
-                placeholder = { Text(stringResource(R.string.placeholder_search_catalog)) },
-                leadingIcon = {
-                    Icon(
-                        painter = painterResource(R.drawable.search_24px),
-                        contentDescription = null
-                    )
-                },
-                singleLine = true
-            )
-
             // Dynamic Category Filter Chips
             val topLevelCategories = remember(state.categories) {
                 state.categories.filter { it.parentCategory == null }

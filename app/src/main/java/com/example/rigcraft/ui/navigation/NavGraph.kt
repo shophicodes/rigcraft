@@ -16,6 +16,7 @@ import com.example.rigcraft.ui.feature.auth.RegisterScreen
 import com.example.rigcraft.ui.feature.catalog.CatalogScreen
 import com.example.rigcraft.ui.feature.details.ProductDetailsScreen
 import com.example.rigcraft.ui.feature.home.HomeScreen
+import com.example.rigcraft.ui.feature.search.SearchScreen
 
 @Composable
 fun NavGraph(
@@ -111,7 +112,13 @@ fun NavGraph(
             )
         }
         composable(route = Screen.Wishlist.route) {}
-        composable(route = Screen.Search.route) {}
+        composable(route = Screen.Search.route) {
+            SearchScreen(
+                onProductClick = { productId ->
+                    navController.navigate(Screen.ProductDetails.createRoute(productId))
+                }
+            )
+        }
         composable(route = Screen.Cart.route) {}
         composable(route = Screen.Profile.route) {}
 
