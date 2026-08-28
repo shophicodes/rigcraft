@@ -53,15 +53,17 @@ class CatalogViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             val currentState = _uiState.value
-            productRepository.getFilteredProducts(
+            val resultFlow = productRepository.getFilteredProducts(
                 categoryId = currentState.selectedCategoryId,
                 subcategoryId = currentState.selectedSubcategoryId,
                 minPrice = currentState.minPrice,
                 maxPrice = currentState.maxPrice
-            ).collect { result ->
+            )
+
+            resultFlow.collect { result ->
                 when (result) {
                     is Resource.Success -> {
-                        val sorted = applySortingAndSearch(result.data, currentState)
+                        val sorted = applySorting(result.data, currentState)
                         _uiState.update { it.copy(isLoading = false, products = sorted) }
                     }
                     is Resource.Error -> {
@@ -73,24 +75,13 @@ class CatalogViewModel @Inject constructor(
         }
     }
 
-    private fun applySortingAndSearch(rawList: List<ProductDto>, state: CatalogUiState): List<ProductDto> {
-
-        var filtered = rawList
-
-        // In-memory text search filtering
-        if (state.searchQuery.isNotBlank()) {
-            filtered = filtered.filter {
-                it.title.contains(state.searchQuery, ignoreCase = true) ||
-                        it.brand.contains(state.searchQuery, ignoreCase = true)
-            }
-        }
-
+    private fun applySorting(rawList: List<ProductDto>, state: CatalogUiState): List<ProductDto> {
         // Apply sorting
         return when (state.selectedSortOption) {
-            SortOption.NEWEST -> filtered.sortedByDescending { it.createdAt }
-            SortOption.PRICE_LOW_TO_HIGH -> filtered.sortedBy { it.price }
-            SortOption.PRICE_HIGH_TO_LOW -> filtered.sortedByDescending { it.price }
-            SortOption.HIGHEST_RATED -> filtered.sortedByDescending { it.ratingAverage }
+            SortOption.NEWEST -> rawList.sortedByDescending { it.createdAt }
+            SortOption.PRICE_LOW_TO_HIGH -> rawList.sortedBy { it.price }
+            SortOption.PRICE_HIGH_TO_LOW -> rawList.sortedByDescending { it.price }
+            SortOption.HIGHEST_RATED -> rawList.sortedByDescending { it.ratingAverage }
         }
     }
 
@@ -101,11 +92,6 @@ class CatalogViewModel @Inject constructor(
 
     fun selectSubcategory(subcategoryId: String?) {
         _uiState.update { it.copy(selectedSubcategoryId = subcategoryId) }
-        loadProducts()
-    }
-
-    fun updateSearchQuery(query: String) {
-        _uiState.update { it.copy(searchQuery = query) }
         loadProducts()
     }
 
