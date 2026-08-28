@@ -27,8 +27,12 @@ sealed class Screen(
     }
 
     // Catalog / Search Results
-    object Catalog : Screen("catalog/{filterType}/{filterValue}", 0, 0) {
-        fun createRoute(type: String, value: String) = "catalog/$type/$value"
+    object Catalog : Screen("catalog?categoryId={categoryId}", 0, 0) {
+        fun createRoute(categoryId: String? = null) = if (categoryId != null) {
+            "catalog?categoryId=$categoryId"
+        } else {
+            "catalog"
+        }
     }
 
     companion object {

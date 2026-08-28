@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.example.rigcraft.ui.feature.auth.AuthViewModel
 import com.example.rigcraft.ui.feature.auth.LoginScreen
 import com.example.rigcraft.ui.feature.auth.RegisterScreen
+import com.example.rigcraft.ui.feature.catalog.CatalogScreen
 import com.example.rigcraft.ui.feature.details.ProductDetailsScreen
 import com.example.rigcraft.ui.feature.home.HomeScreen
 
@@ -88,10 +89,10 @@ fun NavGraph(
                     navController.navigate(Screen.ProductDetails.createRoute(productId))
                 },
                 onCategoryClick = { categoryId ->
-                    navController.navigate(Screen.Catalog.createRoute("category", categoryId))
+                    navController.navigate(Screen.Catalog.createRoute(categoryId))
                 },
-                onSeeAllClick = { filter ->
-                    navController.navigate(Screen.Catalog.createRoute("all", filter))
+                onSeeAllClick = { _ ->
+                    navController.navigate(Screen.Catalog.createRoute())
                 }
             )
         }
@@ -117,11 +118,18 @@ fun NavGraph(
         composable(
             route = Screen.Catalog.route,
             arguments = listOf(
-                navArgument("filterType") { type = NavType.StringType },
-                navArgument("filterValue") { type = NavType.StringType }
+                navArgument("categoryId") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
             )
         ) {
-            // TODO: Implement Catalog Screen
+            CatalogScreen(
+                onProductClick = { productId ->
+                    navController.navigate(Screen.ProductDetails.createRoute(productId))
+                }
+            )
         }
     }
 }

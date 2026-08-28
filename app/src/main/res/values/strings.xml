@@ -45,4 +45,16 @@
     <string name="label_add_to_cart">Add to Cart</string>
     <string name="label_retry">Retry</string>
     <string name="error_product_unavailable">This product is currently unavailable</string>
+    <string name="title_browse_catalog">Browse Catalog</string>
+    <string name="content_desc_sort_options">Sort Options</string>
+    <string name="sort_newest">Newest</string>
+    <string name="sort_price_low_high">Price: Low to High</string>
+    <string name="sort_price_high_low">Price: High to Low</string>
+    <string name="sort_highest_rated">Highest Rated</string>
+    <string name="placeholder_search_catalog">Search GPUs, CPUs, motherboards&#8230;</string>
+    <string name="label_filter_all">All</string>
+    <string name="label_filter_all_subcategories">All Subcategories</string>
+    <string name="label_min_price">Min Price</string>
+    <string name="label_max_price">Max Price</string>
+    <string name="msg_no_products_found">No products found.</string>
 </resources>
