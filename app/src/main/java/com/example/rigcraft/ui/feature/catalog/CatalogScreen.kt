@@ -11,10 +11,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rigcraft.ui.components.ProductCard
@@ -32,12 +33,12 @@ fun CatalogScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Browse Catalog") },
+                title = { Text(stringResource(R.string.title_browse_catalog)) },
                 actions = {
                     IconButton(onClick = { showSortMenu = true }) {
                         Icon(
                             painter = painterResource(R.drawable.filter_list_24px),
-                            contentDescription = "Sort Options"
+                            contentDescription = stringResource(R.string.content_desc_sort_options)
                         )
                     }
                     DropdownMenu(
@@ -45,28 +46,28 @@ fun CatalogScreen(
                         onDismissRequest = { showSortMenu = false }
                     ) {
                         DropdownMenuItem(
-                            text = { Text("Newest") },
+                            text = { Text(stringResource(R.string.sort_newest)) },
                             onClick = {
                                 viewModel.updateSortOption(SortOption.NEWEST)
                                 showSortMenu = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Price: Low to High") },
+                            text = { Text(stringResource(R.string.sort_price_low_high)) },
                             onClick = {
                                 viewModel.updateSortOption(SortOption.PRICE_LOW_TO_HIGH)
                                 showSortMenu = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Price: High to Low") },
+                            text = { Text(stringResource(R.string.sort_price_high_low)) },
                             onClick = {
                                 viewModel.updateSortOption(SortOption.PRICE_HIGH_TO_LOW)
                                 showSortMenu = false
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Highest Rated") },
+                            text = { Text(stringResource(R.string.sort_highest_rated)) },
                             onClick = {
                                 viewModel.updateSortOption(SortOption.HIGHEST_RATED)
                                 showSortMenu = false
@@ -88,8 +89,11 @@ fun CatalogScreen(
                 onValueChange = viewModel::updateSearchQuery,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                placeholder = { Text("Search GPUs, CPUs, motherboards...") },
+                    .padding(
+                        horizontal = dimensionResource(R.dimen.padding_medium),
+                        vertical = dimensionResource(R.dimen.padding_small)
+                    ),
+                placeholder = { Text(stringResource(R.string.placeholder_search_catalog)) },
                 leadingIcon = {
                     Icon(
                         painter = painterResource(R.drawable.search_24px),
@@ -105,14 +109,14 @@ fun CatalogScreen(
             }
 
             LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                contentPadding = PaddingValues(horizontal = dimensionResource(R.dimen.padding_medium)),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
             ) {
                 item {
                     FilterChip(
                         selected = state.selectedCategoryId == null,
                         onClick = { viewModel.selectCategory(null) },
-                        label = { Text("All") }
+                        label = { Text(stringResource(R.string.label_filter_all)) }
                     )
                 }
                 items(topLevelCategories) { category ->
@@ -135,15 +139,15 @@ fun CatalogScreen(
 
             if (subcategories.isNotEmpty()) {
                 LazyRow(
-                    contentPadding = PaddingValues(horizontal = 16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    modifier = Modifier.padding(top = 4.dp)
+                    contentPadding = PaddingValues(horizontal = dimensionResource(R.dimen.padding_medium)),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
+                    modifier = Modifier.padding(top = dimensionResource(R.dimen.padding_extra_small))
                 ) {
                     item {
                         FilterChip(
                             selected = state.selectedSubcategoryId == null,
                             onClick = { viewModel.selectSubcategory(null) },
-                            label = { Text("All Subcategories") }
+                            label = { Text(stringResource(R.string.label_filter_all_subcategories)) }
                         )
                     }
                     // Pass the filtered List of CategoryDto objects to items()
@@ -161,8 +165,11 @@ fun CatalogScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    .padding(
+                        horizontal = dimensionResource(R.dimen.padding_medium),
+                        vertical = dimensionResource(R.dimen.padding_small)
+                    ),
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
@@ -172,7 +179,7 @@ fun CatalogScreen(
                         viewModel.updatePriceFilter(min, state.maxPrice)
                     },
                     modifier = Modifier.weight(1f),
-                    label = { Text("Min Price") },
+                    label = { Text(stringResource(R.string.label_min_price)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
@@ -183,13 +190,13 @@ fun CatalogScreen(
                         viewModel.updatePriceFilter(state.minPrice, max)
                     },
                     modifier = Modifier.weight(1f),
-                    label = { Text("Max Price") },
+                    label = { Text(stringResource(R.string.label_max_price)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
 
             // Product grid
             if (state.isLoading) {
@@ -201,19 +208,19 @@ fun CatalogScreen(
                     Text(
                         text = state.errorMessage!!,
                         color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.padding(16.dp)
+                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
                     )
                 }
             } else if (state.products.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("No products found.", fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.msg_no_products_found), fontWeight = FontWeight.SemiBold)
                 }
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    contentPadding = PaddingValues(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
+                    contentPadding = PaddingValues(dimensionResource(R.dimen.padding_medium)),
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_spaced_by)),
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_spaced_by)),
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(state.products) { product ->
