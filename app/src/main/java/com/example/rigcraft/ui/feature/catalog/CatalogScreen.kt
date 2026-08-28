@@ -80,7 +80,7 @@ fun CatalogScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // --- 1. SEARCH BAR ---
+            // Search Bar
             OutlinedTextField(
                 value = state.searchQuery,
                 onValueChange = viewModel::updateSearchQuery,
@@ -97,7 +97,7 @@ fun CatalogScreen(
                 singleLine = true
             )
 
-            // --- 2. DYNAMIC CATEGORY FILTER CHIPS ---
+            // Dynamic Category Filter Chips
             val topLevelCategories = remember(state.categories) {
                 state.categories.filter { it.parentCategory == null }
             }
@@ -122,7 +122,7 @@ fun CatalogScreen(
                 }
             }
 
-            // --- 3. SUBCATEGORY CHIPS (IF A CATEGORY IS SELECTED) ---
+            // Subcategory items (shown if category is selected)
             val subcategories = remember(state.categories, state.selectedCategoryId) {
                 if (state.selectedCategoryId != null) {
                     state.categories.filter { it.parentCategory == state.selectedCategoryId }
@@ -157,7 +157,7 @@ fun CatalogScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // --- 4. PRODUCT GRID ---
+            // Product grid
             if (state.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     CircularProgressIndicator()
