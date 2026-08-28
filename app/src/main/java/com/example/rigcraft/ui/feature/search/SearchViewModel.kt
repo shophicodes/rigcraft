@@ -2,16 +2,17 @@ package com.example.rigcraft.ui.feature.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rigcraft.data.model.ProductDto
 import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -31,11 +32,12 @@ class SearchViewModel @Inject constructor(
     private fun performSearch(query: String) {
         searchJob?.cancel()
         if (query.isBlank()) {
-            _uiState.update { it.copy(products = emptyList(), isLoading = false) }
+            _uiState.update { it.copy(products = emptyList(), isLoading = false, errorMessage = null) }
             return
         }
 
         searchJob = viewModelScope.launch {
+            delay(300.milliseconds)
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             // Using getFilteredProducts with null filters to get all, then filtering in memory
