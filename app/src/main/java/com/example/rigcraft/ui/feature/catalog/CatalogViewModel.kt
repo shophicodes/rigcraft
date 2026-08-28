@@ -7,6 +7,7 @@ import com.example.rigcraft.data.model.ProductDto
 import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,6 +24,8 @@ class CatalogViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CatalogUiState(selectedCategoryId = initialCategoryId))
     val uiState = _uiState.asStateFlow()
 
+    private var productLoadJob: Job? = null
+
     init {
         loadCategories()
         loadProducts()
@@ -31,15 +34,22 @@ class CatalogViewModel @Inject constructor(
     private fun loadCategories() {
         viewModelScope.launch {
             productRepository.getCategories().collect { result ->
-                if (result is Resource.Success) {
-                    _uiState.update { it.copy(categories = result.data) }
+                when (result) {
+                    is Resource.Success -> {
+                        _uiState.update { it.copy(categories = result.data, errorMessage = null) }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update { it.copy(errorMessage = result.message) }
+                    }
+                    else -> {}
                 }
             }
         }
     }
 
     fun loadProducts() {
-        viewModelScope.launch {
+        productLoadJob?.cancel()
+        productLoadJob = viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
 
             val currentState = _uiState.value
@@ -77,7 +87,7 @@ class CatalogViewModel @Inject constructor(
 
         // Apply sorting
         return when (state.selectedSortOption) {
-            SortOption.NEWEST -> filtered
+            SortOption.NEWEST -> filtered.sortedByDescending { it.createdAt }
             SortOption.PRICE_LOW_TO_HIGH -> filtered.sortedBy { it.price }
             SortOption.PRICE_HIGH_TO_LOW -> filtered.sortedByDescending { it.price }
             SortOption.HIGHEST_RATED -> filtered.sortedByDescending { it.ratingAverage }
