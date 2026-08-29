@@ -109,6 +109,11 @@ fun NavGraph(
             ProductDetailsScreen(
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onNavigateToCart = {
+                    navController.navigate(Screen.Cart.route) {
+                        popUpTo(Screen.Home.route)
+                    }
                 }
             )
         }

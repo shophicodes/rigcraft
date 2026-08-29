@@ -37,15 +37,24 @@ import kotlinx.coroutines.flow.collectLatest
 @Composable
 fun ProductDetailsScreen(
     onBackClick: () -> Unit,
+    onNavigateToCart: () -> Unit,
     viewModel: ProductDetailsViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val goToCartLabel = stringResource(R.string.label_go_to_cart)
 
     // Display feedback message when product is added to cart
     LaunchedEffect(state.userMessage, state.errorMessage) {
         state.userMessage?.let {
-            snackbarHostState.showSnackbar(it)
+            val result = snackbarHostState.showSnackbar(
+                message = it,
+                actionLabel = goToCartLabel,
+                duration = SnackbarDuration.Short
+            )
+            if (result == SnackbarResult.ActionPerformed) {
+                onNavigateToCart()
+            }
             viewModel.clearUserMessage()
         }
         state.errorMessage?.let {

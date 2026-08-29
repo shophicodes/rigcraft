@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -199,7 +200,8 @@ fun CartItemCard(
                 Text(
                     text = item.title,
                     fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -229,9 +231,15 @@ fun CartItemCard(
                 ) {
                     IconButton(
                         onClick = { onQuantityChange(-1) },
+                        enabled = item.quantity > 1,
                         modifier = Modifier.size(32.dp)
                     ) {
-                        Icon(painterResource(R.drawable.remove_24px), contentDescription = "Decrease", modifier = Modifier.size(16.dp))
+                        Icon(
+                            painterResource(R.drawable.remove_24px),
+                            contentDescription = "Decrease",
+                            modifier = Modifier.size(16.dp),
+                            tint = if (item.quantity > 1) LocalContentColor.current else Color.Gray.copy(alpha = 0.5f)
+                        )
                     }
                     Text(
                         text = "${item.quantity}",
@@ -241,9 +249,15 @@ fun CartItemCard(
                     )
                     IconButton(
                         onClick = { onQuantityChange(1) },
+                        enabled = item.quantity < 50,
                         modifier = Modifier.size(32.dp)
                     ) {
-                        Icon(painterResource(R.drawable.add_24px), contentDescription = "Increase", modifier = Modifier.size(16.dp))
+                        Icon(
+                            painterResource(R.drawable.add_24px),
+                            contentDescription = "Increase",
+                            modifier = Modifier.size(16.dp),
+                            tint = if (item.quantity < 50) LocalContentColor.current else Color.Gray.copy(alpha = 0.5f)
+                        )
                     }
                 }
             }
