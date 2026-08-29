@@ -1,6 +1,7 @@
 package com.example.rigcraft.data.repository
 
 import com.example.rigcraft.data.model.CartItemDto
+import com.example.rigcraft.data.model.ProductDto
 import com.example.rigcraft.domain.repository.CartRepository
 import com.example.rigcraft.util.Resource
 import com.google.firebase.firestore.FirebaseFirestore
@@ -26,6 +27,47 @@ class CartRepositoryImpl @Inject constructor(
                     Resource.Error(e.message ?: "Failed to fetch cart")
                 }
             }
+    }
+
+    override suspend fun addToCart(
+        userId: String,
+        product: ProductDto,
+        quantity: Int
+    ): Resource<Unit> {
+        return try {
+            val itemsCollection = firestore.collection("carts")
+                .document(userId)
+                .collection("items")
+
+            // Check if product already exists in user's cart
+            val existingDocQuery = itemsCollection
+                .whereEqualTo("productId", product.id)
+                .get()
+                .await()
+
+            if (!existingDocQuery.isEmpty) {
+                // Product exists: Update existing quantity
+                val existingDoc = existingDocQuery.documents.first()
+                val currentQty = existingDoc.getLong("quantity")?.toInt() ?: 1
+                existingDoc.reference.update("quantity", currentQty + quantity).await()
+            } else {
+                // Product does NOT exist: Create new CartItemDto document
+                val newItemRef = itemsCollection.document()
+                val cartItem = CartItemDto(
+                    itemId = newItemRef.id,
+                    productId = product.id,
+                    title = product.title,
+                    price = product.price,
+                    image = product.images[0],
+                    quantity = quantity,
+                )
+                newItemRef.set(cartItem).await()
+            }
+            Resource.Success(Unit)
+        }
+        catch (e: Exception) {
+            Resource.Error(e.message ?: "Failed to add product to cart")
+        }
     }
 
     override suspend fun updateQuantity(

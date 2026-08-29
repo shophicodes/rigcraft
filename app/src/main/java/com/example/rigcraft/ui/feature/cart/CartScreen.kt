@@ -133,7 +133,7 @@ fun CartSummaryBottomBar(
                     .height(48.dp),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Proceed to Checkout (${"%.2f".format(total)}) RSD")
+                Text("Proceed to Checkout")
             }
         }
     }
@@ -203,11 +203,21 @@ fun CartItemCard(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "$${"%.2f".format(item.price)}",
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
+
+                if(item.quantity > 1) {
+                    Text(
+                        text = "${"%.2f".format(item.price)} RSD x${item.quantity}",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                else {
+                    Text(
+                        text = "${"%.2f".format(item.price)} RSD",
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Quantity Modifier

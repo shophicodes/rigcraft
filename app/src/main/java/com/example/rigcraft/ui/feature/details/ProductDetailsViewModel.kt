@@ -4,20 +4,25 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rigcraft.data.model.ProductDto
+import com.example.rigcraft.domain.repository.CartRepository
 import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.util.Resource
+import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ProductDetailsViewModel @Inject constructor(
     private val productRepository: ProductRepository,
+    private val cartRepository: CartRepository,
+    private val auth: FirebaseAuth,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val productId: String = checkNotNull(savedStateHandle["productId"])
@@ -75,12 +80,41 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     fun addToCart() {
+        val userId = auth.currentUser?.uid ?: "guest_user"
+        val product = _uiState.value.product ?: return
+        val quantity = _uiState.value.selectedQuantity
+
         viewModelScope.launch {
-            val product = _uiState.value.product ?: return@launch
-            val quantity = _uiState.value.selectedQuantity
-            // In a real application, this would call a CartRepository
-            // For now, we simulate success with a toast event
-            _eventFlow.emit(DetailsUiEvent.ShowToast("${product.title} added to cart ($quantity)"))
+            _uiState.update { it.copy(isAddingToCart = true) }
+            val result = cartRepository.addToCart(
+                userId = userId,
+                product = product,
+                quantity = quantity
+            )
+
+            when (result) {
+                is Resource.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isAddingToCart = false,
+                            userMessage = "Added ${_uiState.value.selectedQuantity} item(s) to cart!"
+                        )
+                    }
+                }
+                is Resource.Error -> {
+                    _uiState.update {
+                        it.copy(
+                            isAddingToCart = false,
+                            errorMessage = result.message ?: "Could not add to cart"
+                        )
+                    }
+                }
+                else -> {}
+            }
         }
+    }
+
+    fun clearUserMessage() {
+        _uiState.update { it.copy(userMessage = null, errorMessage = null) }
     }
 }
