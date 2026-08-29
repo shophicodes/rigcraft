@@ -13,11 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -35,7 +36,7 @@ fun CartScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Shopping Cart (${state.cartItems.sumOf { it.quantity }})") }
+                title = { Text(stringResource(R.string.title_shopping_cart, state.cartItems.sumOf { it.quantity })) }
             )
         },
         bottomBar = {
@@ -70,11 +71,11 @@ fun CartScreen(
                     Icon(
                         painter = painterResource(R.drawable.shopping_cart_24px),
                         contentDescription = null,
-                        modifier = Modifier.size(64.dp),
+                        modifier = Modifier.size(dimensionResource(R.dimen.category_item_size)),
                         tint = Color.Gray
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("Your cart is empty", style = MaterialTheme.typography.titleMedium)
+                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
+                    Text(stringResource(R.string.msg_empty_cart), style = MaterialTheme.typography.titleMedium)
                 }
             }
         }
@@ -83,8 +84,8 @@ fun CartScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(dimensionResource(R.dimen.padding_medium)),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_spaced_by))
             ) {
                 items(state.cartItems, key = { it.itemId }) { item ->
                     CartItemCard(
@@ -108,33 +109,33 @@ fun CartSummaryBottomBar(
     onCheckoutClick: () -> Unit
 ) {
     Surface(
-        shadowElevation = 12.dp,
+        shadowElevation = dimensionResource(R.dimen.padding_spaced_by),
         color = MaterialTheme.colorScheme.surface
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(dimensionResource(R.dimen.padding_medium))
         ) {
-            SummaryRow(label = "Subtotal", amount = subtotal)
+            SummaryRow(label = stringResource(R.string.label_subtotal), amount = subtotal)
             SummaryRow(
-                label = "Shipping",
+                label = stringResource(R.string.label_shipping),
                 amount = shipping,
-                overrideText = if (shipping == 0.0) "FREE" else null
+                overrideText = if (shipping == 0.0) stringResource(R.string.label_free) else null
             )
-            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
-            SummaryRow(label = "Total", amount = total, isBold = true)
+            HorizontalDivider(modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_small)))
+            SummaryRow(label = stringResource(R.string.label_total), amount = total, isBold = true)
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_spaced_by)))
 
             Button(
                 onClick = onCheckoutClick,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(12.dp)
+                    .height(dimensionResource(R.dimen.bottom_bar_item_height)),
+                shape = RoundedCornerShape(dimensionResource(R.dimen.product_card_corner_radius))
             ) {
-                Text("Proceed to Checkout")
+                Text(stringResource(R.string.label_proceed_to_checkout))
             }
         }
     }
@@ -147,21 +148,26 @@ fun SummaryRow(
     isBold: Boolean = false,
     overrideText: String? = null
 ) {
+    val density = LocalDensity.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 2.dp),
+            .padding(vertical = dimensionResource(R.dimen.badge_padding_vertical)),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
             text = label,
             fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
-            fontSize = if (isBold) 16.sp else 14.sp
+            fontSize = with(density) {
+                dimensionResource(if (isBold) R.dimen.text_size_medium else R.dimen.text_size_small).toSp()
+            }
         )
         Text(
-            text = overrideText ?: "${"%.2f".format(amount)} RSD",
+            text = overrideText ?: stringResource(R.string.price_format, amount, stringResource(R.string.currency_rsd)),
             fontWeight = if (isBold) FontWeight.Bold else FontWeight.Normal,
-            fontSize = if (isBold) 16.sp else 14.sp,
+            fontSize = with(density) {
+                dimensionResource(if (isBold) R.dimen.text_size_medium else R.dimen.text_size_small).toSp()
+            },
             color = if (isBold) MaterialTheme.colorScheme.primary else Color.Unspecified
         )
     }
@@ -179,7 +185,7 @@ fun CartItemCard(
     ) {
         Row(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(dimensionResource(R.dimen.padding_spaced_by))
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -188,13 +194,13 @@ fun CartItemCard(
                 contentDescription = item.title,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
-                    .size(72.dp)
-                    .clip(RoundedCornerShape(8.dp))
+                    .size(dimensionResource(R.dimen.cart_item_image_size))
+                    .clip(RoundedCornerShape(dimensionResource(R.dimen.padding_small)))
                     .background(Color.White)
-                    .padding(4.dp)
+                    .padding(dimensionResource(R.dimen.padding_extra_small))
             )
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_spaced_by)))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
@@ -204,58 +210,63 @@ fun CartItemCard(
                     overflow = TextOverflow.Ellipsis,
                     style = MaterialTheme.typography.bodyLarge
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
 
                 if(item.quantity > 1) {
                     Text(
-                        text = "${"%.2f".format(item.price)} RSD x${item.quantity}",
+                        text = stringResource(
+                            R.string.cart_item_price_quantity_format,
+                            item.price,
+                            stringResource(R.string.currency_rsd),
+                            item.quantity
+                        ),
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 }
                 else {
                     Text(
-                        text = "${"%.2f".format(item.price)} RSD",
+                        text = stringResource(R.string.price_format, item.price, stringResource(R.string.currency_rsd)),
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold
                     )
                 }
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
 
                 // Quantity Modifier
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(6.dp))
+                        .clip(RoundedCornerShape(dimensionResource(R.dimen.small_corner_radius)))
                         .background(MaterialTheme.colorScheme.surface)
                 ) {
                     IconButton(
                         onClick = { onQuantityChange(-1) },
                         enabled = item.quantity > 1,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(dimensionResource(R.dimen.small_button_size))
                     ) {
                         Icon(
                             painterResource(R.drawable.remove_24px),
-                            contentDescription = "Decrease",
-                            modifier = Modifier.size(16.dp),
+                            contentDescription = stringResource(R.string.label_decrease),
+                            modifier = Modifier.size(dimensionResource(R.dimen.icon_size_small)),
                             tint = if (item.quantity > 1) LocalContentColor.current else Color.Gray.copy(alpha = 0.5f)
                         )
                     }
                     Text(
                         text = "${item.quantity}",
                         fontWeight = FontWeight.Bold,
-                        fontSize = 14.sp,
-                        modifier = Modifier.padding(horizontal = 8.dp)
+                        fontSize = with(LocalDensity.current) { dimensionResource(R.dimen.text_size_small).toSp() },
+                        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
                     )
                     IconButton(
                         onClick = { onQuantityChange(1) },
                         enabled = item.quantity < 50,
-                        modifier = Modifier.size(32.dp)
+                        modifier = Modifier.size(dimensionResource(R.dimen.small_button_size))
                     ) {
                         Icon(
                             painterResource(R.drawable.add_24px),
-                            contentDescription = "Increase",
-                            modifier = Modifier.size(16.dp),
+                            contentDescription = stringResource(R.string.label_increase),
+                            modifier = Modifier.size(dimensionResource(R.dimen.icon_size_small)),
                             tint = if (item.quantity < 50) LocalContentColor.current else Color.Gray.copy(alpha = 0.5f)
                         )
                     }
@@ -265,7 +276,7 @@ fun CartItemCard(
             IconButton(onClick = onRemove) {
                 Icon(
                     painter = painterResource(R.drawable.delete_24px),
-                    contentDescription = "Remove Item",
+                    contentDescription = stringResource(R.string.content_desc_remove_item),
                     tint = Color.Red.copy(alpha = 0.7f)
                 )
             }

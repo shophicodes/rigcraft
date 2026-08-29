@@ -58,4 +58,13 @@
     <string name="label_min_price">Min Price</string>
     <string name="label_max_price">Max Price</string>
     <string name="msg_no_products_found">No products found.</string>
+    <string name="title_shopping_cart">Shopping Cart (%1$d)</string>
+    <string name="msg_empty_cart">Your cart is empty</string>
+    <string name="label_subtotal">Subtotal</string>
+    <string name="label_shipping">Shipping</string>
+    <string name="label_free">FREE</string>
+    <string name="label_total">Total</string>
+    <string name="label_proceed_to_checkout">Proceed to Checkout</string>
+    <string name="cart_item_price_quantity_format">%1$.2f %2$s x%3$d</string>
+    <string name="content_desc_remove_item">Remove Item</string>
 </resources>
