@@ -13,8 +13,7 @@ sealed class Screen(
     object Home: Screen("home", R.string.nav_home, R.drawable.home_24px)
     object Wishlist: Screen("wishlist", R.string.nav_wishlist, R.drawable.favorite_24px)
     object Search: Screen("search", R.string.nav_search, R.drawable.search_24px)
-    // TO DO: Implement dynamic badge state with a ViewModel
-    object Cart: Screen("cart", R.string.nav_cart, R.drawable.shopping_cart_24px, badgeCount = 5)
+    object Cart: Screen("cart", R.string.nav_cart, R.drawable.shopping_cart_24px)
     object Profile: Screen("profile", R.string.nav_profile, R.drawable.person_24px)
 
     // For Authentication

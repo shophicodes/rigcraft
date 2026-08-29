@@ -23,6 +23,10 @@ class CartViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CartUiState())
     val uiState = _uiState.asStateFlow()
 
+    init {
+        observeCart()
+    }
+
     private fun observeCart() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
