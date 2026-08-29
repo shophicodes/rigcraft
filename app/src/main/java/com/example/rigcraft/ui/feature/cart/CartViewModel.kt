@@ -37,7 +37,7 @@ class CartViewModel @Inject constructor(
             authRepository.getAuthStateFlow()
                 .flatMapLatest { userId ->
                     if (userId == null) {
-                        flowOf(Resource.Error("User not authenticated"))
+                        flowOf(Resource.Error("Korisniku nije dozvoljen pristup"))
                     } else {
                         cartRepository.getCartItems(userId)
                     }

@@ -84,7 +84,7 @@ class ProductDetailsViewModel @Inject constructor(
 
         val userId = authRepository.getCurrentUser()
         if (userId == null) {
-            _uiState.update { it.copy(cartErrorMessage = "Please sign in to add items to cart") }
+            _uiState.update { it.copy(cartErrorMessage = "Prijavite se da biste mogli dodavati proizvode u korpu") }
             return
         }
 
@@ -104,7 +104,7 @@ class ProductDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isAddingToCart = false,
-                            userMessage = "Added $quantity item(s) to cart!"
+                            userMessage = "$quantity proizvod(a) dodat(a) u korpu!"
                         )
                     }
                 }
@@ -112,7 +112,7 @@ class ProductDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isAddingToCart = false,
-                            cartErrorMessage = result.message ?: "Could not add to cart"
+                            cartErrorMessage = result.message ?: "Greška pri dodavanju proizvoda u korpu"
                         )
                     }
                 }

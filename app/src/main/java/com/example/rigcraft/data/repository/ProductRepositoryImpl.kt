@@ -28,7 +28,7 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Success(categories))
         }
         catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to fetch categories"))
+            emit(Resource.Error(e.message ?: "Greška pri učitavanju kategorija"))
         }
     }
 
@@ -45,7 +45,7 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Success(products))
         }
         catch(e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to fetch recent products"))
+            emit(Resource.Error(e.message ?: "Greška pri učitavanju nedavnih proizvoda"))
         }
     }
 
@@ -62,7 +62,7 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Success(products))
         }
         catch(e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to fetch recent products"))
+            emit(Resource.Error(e.message ?: "Greška pri učitavanju proizvoda na popustu"))
         }
     }
 
@@ -78,7 +78,7 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Success(products))
         }
         catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to fetch products for $categoryId"))
+            emit(Resource.Error(e.message ?: "Greška pri učitavanju proizvoda za kategoriju $categoryId"))
         }
     }
 
@@ -112,7 +112,7 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Success(products))
         }
         catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to apply filters"))
+            emit(Resource.Error(e.message ?: "Greška pri učitavanju filtriranih proizvoda"))
         }
     }
 
@@ -141,7 +141,7 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Success(products))
         }
         catch(e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to filter products by specifications"))
+            emit(Resource.Error(e.message ?: "Greška pri učitavanju proizvoda filtriranih po specifikacijama"))
         }
     }
 
@@ -157,7 +157,7 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Success(product))
         }
         catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to get product by ID"))
+            emit(Resource.Error(e.message ?: "Greška pri učitavanju proizvoda po ID-u"))
         }
     }
 }

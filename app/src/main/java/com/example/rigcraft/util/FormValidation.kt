@@ -12,13 +12,13 @@ object FormValidation {
         if(email.isBlank()) {
             return ValidationResult(
                 isValid = false,
-                errorMessage = "Email can't be empty."
+                errorMessage = "Email adresa ne može biti prazna."
             )
         }
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             return ValidationResult(
                 isValid = false,
-                errorMessage = "Invalid email format."
+                errorMessage = "Email format nije dobar."
             )
         }
         return ValidationResult(isValid = true)
@@ -28,13 +28,13 @@ object FormValidation {
         if(displayName.isBlank()) {
             return ValidationResult(
                 isValid = false,
-                errorMessage = "Display name can't be empty."
+                errorMessage = "Ime ne može biti prazno."
             )
         }
         if(displayName.length > 40) {
             return ValidationResult(
                 isValid = false,
-                errorMessage = "Display name mustn't have more than 40 characters."
+                errorMessage = "Ime ne može imati više od 40 karaktera."
             )
         }
 
@@ -45,13 +45,13 @@ object FormValidation {
         if(password.isBlank()) {
             return ValidationResult(
                 isValid = false,
-                errorMessage = "Password can't be empty."
+                errorMessage = "Lozinka ne može biti prazna."
             )
         }
         if(password.length < 6) {
             return ValidationResult(
                 isValid = false,
-                errorMessage = "Password must have at least 6 characters."
+                errorMessage = "Lozinka mora imati minimum 6 karaktera."
             )
         }
         return ValidationResult(isValid = true)
@@ -61,7 +61,7 @@ object FormValidation {
         if(password != confirmPass) {
             return ValidationResult(
                 isValid = false,
-                errorMessage = "Passwords do not match."
+                errorMessage = "Lozinke se ne poklapaju."
             )
         }
         return ValidationResult(isValid = true)
