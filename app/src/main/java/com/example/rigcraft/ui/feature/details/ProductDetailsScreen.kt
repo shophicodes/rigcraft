@@ -45,7 +45,7 @@ fun ProductDetailsScreen(
     val goToCartLabel = stringResource(R.string.label_go_to_cart)
 
     // Display feedback message when product is added to cart
-    LaunchedEffect(state.userMessage, state.errorMessage) {
+    LaunchedEffect(state.userMessage, state.cartErrorMessage, state.errorMessage) {
         state.userMessage?.let {
             val result = snackbarHostState.showSnackbar(
                 message = it,
@@ -55,6 +55,10 @@ fun ProductDetailsScreen(
             if (result == SnackbarResult.ActionPerformed) {
                 onNavigateToCart()
             }
+            viewModel.clearUserMessage()
+        }
+        state.cartErrorMessage?.let {
+            snackbarHostState.showSnackbar(it)
             viewModel.clearUserMessage()
         }
         state.errorMessage?.let {
@@ -85,7 +89,8 @@ fun ProductDetailsScreen(
                     quantity = state.selectedQuantity,
                     onIncrement = viewModel::incrementQuantity,
                     onDecrement = viewModel::decrementQuantity,
-                    onAddToCartClick = viewModel::addToCart
+                    onAddToCartClick = viewModel::addToCart,
+                    isAddingToCart = state.isAddingToCart
                 )
             }
         }
@@ -322,7 +327,8 @@ fun AddToCartBottomBar(
     quantity: Int,
     onIncrement: () -> Unit,
     onDecrement: () -> Unit,
-    onAddToCartClick: () -> Unit
+    onAddToCartClick: () -> Unit,
+    isAddingToCart: Boolean = false
 ) {
     Surface(
         shadowElevation = dimensionResource(R.dimen.padding_small),
@@ -343,7 +349,7 @@ fun AddToCartBottomBar(
                     .background(MaterialTheme.colorScheme.surfaceVariant)
                     .height(dimensionResource(R.dimen.bottom_bar_item_height))
             ) {
-                IconButton(onClick = onDecrement, modifier = Modifier.size(dimensionResource(R.dimen.quantity_selector_button_size))) {
+                IconButton(onClick = onDecrement, enabled = !isAddingToCart, modifier = Modifier.size(dimensionResource(R.dimen.quantity_selector_button_size))) {
                     Icon(painterResource(R.drawable.remove_24px), contentDescription = stringResource(R.string.label_decrease))
                 }
                 Text(
@@ -351,7 +357,7 @@ fun AddToCartBottomBar(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_small))
                 )
-                IconButton(onClick = onIncrement, modifier = Modifier.size(dimensionResource(R.dimen.quantity_selector_button_size))) {
+                IconButton(onClick = onIncrement, enabled = !isAddingToCart, modifier = Modifier.size(dimensionResource(R.dimen.quantity_selector_button_size))) {
                     Icon(painterResource(R.drawable.add_24px), contentDescription = stringResource(R.string.label_increase))
                 }
             }
@@ -359,11 +365,19 @@ fun AddToCartBottomBar(
             // Add To Cart Button
             Button(
                 onClick = onAddToCartClick,
-                enabled = product.inStock,
+                enabled = product.inStock && !isAddingToCart,
                 shape = RoundedCornerShape(dimensionResource(R.dimen.padding_spaced_by)),
                 modifier = Modifier.height(dimensionResource(R.dimen.bottom_bar_item_height))
             ) {
-                Icon(painterResource(R.drawable.shopping_cart_24px), contentDescription = null)
+                if (isAddingToCart) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(dimensionResource(R.dimen.icon_size_small)),
+                        strokeWidth = dimensionResource(R.dimen.badge_padding_vertical),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Icon(painterResource(R.drawable.shopping_cart_24px), contentDescription = null)
+                }
                 Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_small)))
                 Text(stringResource(R.string.label_add_to_cart))
             }

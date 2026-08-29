@@ -4,10 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.rigcraft.data.model.ProductDto
+import com.example.rigcraft.domain.repository.AuthRepository
 import com.example.rigcraft.domain.repository.CartRepository
 import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.util.Resource
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ import javax.inject.Inject
 class ProductDetailsViewModel @Inject constructor(
     private val productRepository: ProductRepository,
     private val cartRepository: CartRepository,
-    private val auth: FirebaseAuth,
+    private val authRepository: AuthRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val productId: String = checkNotNull(savedStateHandle["productId"])
@@ -80,7 +80,14 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     fun addToCart() {
-        val userId = auth.currentUser?.uid ?: "guest_user"
+        if (_uiState.value.isAddingToCart) return
+
+        val userId = authRepository.getCurrentUser()
+        if (userId == null) {
+            _uiState.update { it.copy(cartErrorMessage = "Please sign in to add items to cart") }
+            return
+        }
+
         val product = _uiState.value.product ?: return
         val quantity = _uiState.value.selectedQuantity
 
@@ -97,7 +104,7 @@ class ProductDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isAddingToCart = false,
-                            userMessage = "Added ${_uiState.value.selectedQuantity} item(s) to cart!"
+                            userMessage = "Added $quantity item(s) to cart!"
                         )
                     }
                 }
@@ -105,16 +112,18 @@ class ProductDetailsViewModel @Inject constructor(
                     _uiState.update {
                         it.copy(
                             isAddingToCart = false,
-                            errorMessage = result.message ?: "Could not add to cart"
+                            cartErrorMessage = result.message ?: "Could not add to cart"
                         )
                     }
                 }
-                else -> {}
+                else -> {
+                    _uiState.update { it.copy(isAddingToCart = false) }
+                }
             }
         }
     }
 
     fun clearUserMessage() {
-        _uiState.update { it.copy(userMessage = null, errorMessage = null) }
+        _uiState.update { it.copy(userMessage = null, cartErrorMessage = null, errorMessage = null) }
     }
 }

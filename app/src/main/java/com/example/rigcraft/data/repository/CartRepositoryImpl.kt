@@ -7,6 +7,7 @@ import com.example.rigcraft.util.Resource
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -20,12 +21,11 @@ class CartRepositoryImpl @Inject constructor(
             .collection("items")
             .snapshots()
             .map { snapshot ->
-                try {
-                    val items = snapshot.toObjects(CartItemDto::class.java)
-                    Resource.Success(items)
-                } catch (e: Exception) {
-                    Resource.Error(e.message ?: "Failed to fetch cart")
-                }
+                val items = snapshot.toObjects(CartItemDto::class.java)
+                Resource.Success(items) as Resource<List<CartItemDto>>
+            }
+            .catch { e ->
+                emit(Resource.Error(e.message ?: "Failed to fetch cart"))
             }
     }
 
@@ -35,37 +35,30 @@ class CartRepositoryImpl @Inject constructor(
         quantity: Int
     ): Resource<Unit> {
         return try {
-            val itemsCollection = firestore.collection("carts")
+            val itemDocRef = firestore.collection("carts")
                 .document(userId)
                 .collection("items")
+                .document(product.id)
 
-            // Check if product already exists in user's cart
-            val existingDocQuery = itemsCollection
-                .whereEqualTo("productId", product.id)
-                .get()
-                .await()
-
-            if (!existingDocQuery.isEmpty) {
-                // Product exists: Update existing quantity
-                val existingDoc = existingDocQuery.documents.first()
-                val currentQty = existingDoc.getLong("quantity")?.toInt() ?: 1
-                existingDoc.reference.update("quantity", currentQty + quantity).await()
-            } else {
-                // Product does NOT exist: Create new CartItemDto document
-                val newItemRef = itemsCollection.document()
-                val cartItem = CartItemDto(
-                    itemId = newItemRef.id,
-                    productId = product.id,
-                    title = product.title,
-                    price = product.price,
-                    image = product.images[0],
-                    quantity = quantity,
-                )
-                newItemRef.set(cartItem).await()
-            }
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(itemDocRef)
+                if (snapshot.exists()) {
+                    val currentQty = snapshot.getLong("quantity")?.toInt() ?: 0
+                    transaction.update(itemDocRef, "quantity", currentQty + quantity)
+                } else {
+                    val cartItem = CartItemDto(
+                        itemId = product.id,
+                        productId = product.id,
+                        title = product.title,
+                        price = product.price,
+                        image = if (product.images.isNotEmpty()) product.images[0] else "",
+                        quantity = quantity,
+                    )
+                    transaction.set(itemDocRef, cartItem)
+                }
+            }.await()
             Resource.Success(Unit)
-        }
-        catch (e: Exception) {
+        } catch (e: Exception) {
             Resource.Error(e.message ?: "Failed to add product to cart")
         }
     }

@@ -127,9 +127,7 @@ fun NavGraph(
         }
         composable(route = Screen.Cart.route) {
             CartScreen(
-                onCheckoutClick = {
-                    // navController.navigate(Screen.Checkout.route)
-                }
+                onCheckoutClick = null
             )
         }
         composable(route = Screen.Profile.route) {}

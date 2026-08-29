@@ -28,7 +28,7 @@ import com.example.rigcraft.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CartScreen(
-    onCheckoutClick: () -> Unit,
+    onCheckoutClick: (() -> Unit)? = null,
     viewModel: CartViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -58,6 +58,20 @@ fun CartScreen(
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator()
+            }
+        }
+        else if(state.errorMessage != null) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = state.errorMessage!!,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyLarge
+                )
             }
         }
         else if(state.cartItems.isEmpty()) {
@@ -106,7 +120,7 @@ fun CartSummaryBottomBar(
     subtotal: Double,
     shipping: Double,
     total: Double,
-    onCheckoutClick: () -> Unit
+    onCheckoutClick: (() -> Unit)? = null
 ) {
     Surface(
         shadowElevation = dimensionResource(R.dimen.padding_spaced_by),
@@ -126,16 +140,18 @@ fun CartSummaryBottomBar(
             HorizontalDivider(modifier = Modifier.padding(vertical = dimensionResource(R.dimen.padding_small)))
             SummaryRow(label = stringResource(R.string.label_total), amount = total, isBold = true)
 
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_spaced_by)))
+            onCheckoutClick?.let {
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_spaced_by)))
 
-            Button(
-                onClick = onCheckoutClick,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(dimensionResource(R.dimen.bottom_bar_item_height)),
-                shape = RoundedCornerShape(dimensionResource(R.dimen.product_card_corner_radius))
-            ) {
-                Text(stringResource(R.string.label_proceed_to_checkout))
+                Button(
+                    onClick = it,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(dimensionResource(R.dimen.bottom_bar_item_height)),
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.product_card_corner_radius))
+                ) {
+                    Text(stringResource(R.string.label_proceed_to_checkout))
+                }
             }
         }
     }
