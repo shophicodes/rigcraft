@@ -7,7 +7,9 @@ import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -18,6 +20,16 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override fun getCurrentUser() = firebaseAuth.currentUser?.uid
+
+    override fun getAuthStateFlow(): Flow<String?> = callbackFlow {
+        val listener = FirebaseAuth.AuthStateListener { auth ->
+            trySend(auth.currentUser?.uid)
+        }
+        firebaseAuth.addAuthStateListener(listener)
+        awaitClose {
+            firebaseAuth.removeAuthStateListener(listener)
+        }
+    }
 
     override fun isUserLoggedIn(): Boolean = firebaseAuth.currentUser != null
 

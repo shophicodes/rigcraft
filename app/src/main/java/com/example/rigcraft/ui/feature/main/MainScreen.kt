@@ -22,6 +22,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.collectAsState
 import com.example.rigcraft.R
 import com.example.rigcraft.ui.feature.auth.AuthViewModel
+import com.example.rigcraft.ui.feature.cart.CartViewModel
 import com.example.rigcraft.ui.navigation.NavGraph
 import com.example.rigcraft.ui.navigation.Screen
 import com.example.rigcraft.ui.theme.RigCraftTheme
@@ -29,20 +30,25 @@ import com.example.rigcraft.ui.theme.RigCraftTheme
 @Composable
 fun MainScreen(
     navController: NavHostController = rememberNavController(),
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    cartViewModel: CartViewModel = hiltViewModel()
 ) {
     val isUserLoggedIn by authViewModel.isUserLoggedIn.collectAsState()
+    val cartState by cartViewModel.uiState.collectAsState()
+    val cartItemCount = cartState.cartItems.sumOf { it.quantity }
 
     MainScreenContent(
         navController = navController,
-        isUserLoggedIn = isUserLoggedIn
+        isUserLoggedIn = isUserLoggedIn,
+        cartItemCount = cartItemCount
     )
 }
 
 @Composable
 fun MainScreenContent(
     navController: NavHostController,
-    isUserLoggedIn: Boolean?
+    isUserLoggedIn: Boolean?,
+    cartItemCount: Int = 0
 ) {
     if (isUserLoggedIn == null) {
         // Loading state
@@ -60,6 +66,8 @@ fun MainScreenContent(
             if (showBottomBar && isUserLoggedIn) {
                 NavigationBar {
                     Screen.bottomNavItems.forEach { screen ->
+                        val badgeCount = if (screen is Screen.Cart) cartItemCount else screen.badgeCount
+
                         NavigationBarItem(
                             selected = currentRoute == screen.route,
                             onClick = {
@@ -74,10 +82,10 @@ fun MainScreenContent(
                             icon = {
                                 BadgedBox(
                                     badge = {
-                                        if (screen.badgeCount != null && screen.badgeCount > 0) {
+                                        if (badgeCount != null && badgeCount > 0) {
                                             Badge {
                                                 val countText =
-                                                    if (screen.badgeCount > 99) stringResource(R.string.badge_max_count) else screen.badgeCount.toString()
+                                                    if (badgeCount > 99) stringResource(R.string.badge_max_count) else badgeCount.toString()
                                                 Text(text = countText)
                                             }
                                         }
@@ -109,7 +117,8 @@ fun MainScreenPreview() {
     RigCraftTheme {
         MainScreenContent(
             navController = rememberNavController(),
-            isUserLoggedIn = true
+            isUserLoggedIn = true,
+            cartItemCount = 3
         )
     }
 }
