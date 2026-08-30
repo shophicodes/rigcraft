@@ -66,4 +66,22 @@
     <string name="label_proceed_to_checkout">Nastavi na isporuku</string>
     <string name="cart_item_price_quantity_format">%1$.2f %2$s x%3$d</string>
     <string name="content_desc_remove_item">Ukloni proizvod</string>
+    <string name="profile_title_menu">Moj nalog</string>
+    <string name="profile_title_settings">Podešavanja naloga</string>
+    <string name="profile_title_addresses">Dostavne Adrese</string>
+    <string name="profile_title_orders">Istorija porudžbina</string>
+    <string name="content_desc_back_navigation">Vrati se nazad</string>
+    <string name="dialog_title_change_name">Promeni ime</string>
+    <string name="dialog_title_new_password">Nova lozinka</string>
+    <string name="dialog_title_delete_account">Obriši nalog</string>
+    <string name="dialog_msg_delete_account_confirm">Da li ste sigurni? Ova radnja se ne može poništiti.</string>
+    <string name="label_delete">Obriši</string>
+    <string name="label_cancel">Otkaži</string>
+    <string name="label_save">Sačuvaj</string>
+    <string name="profile_menu_subtitle_settings">Upravljaj sa nalogom</string>
+    <string name="profile_menu_title_addresses">Upravljaj sa dostavnim adresama</string>
+    <string name="profile_menu_subtitle_addresses">Dodaj, ažuriraj ili obriši dostavne adrese</string>
+    <string name="profile_menu_title_orders">Pogledaj porudžbine</string>
+    <string name="profile_menu_subtitle_orders">Proveri istoriju porudžbina</string>
+    <string name="content_desc_go_to_format">Idi na %1$s</string>
 </resources>

@@ -41,10 +41,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rigcraft.ui.feature.auth.AuthViewModel
@@ -76,17 +77,20 @@ fun ProfileScreen(
                 title = {
                     Text(
                         when (currentSection) {
-                            ProfileSection.MENU -> "Moj nalog"
-                            ProfileSection.PERSONAL_INFO -> "Podešavanja naloga"
-                            ProfileSection.ADDRESSES -> "Dostavne Adrese"
-                            ProfileSection.ORDERS -> "Istorija porudžbina"
+                            ProfileSection.MENU -> stringResource(R.string.profile_title_menu)
+                            ProfileSection.PERSONAL_INFO -> stringResource(R.string.profile_title_settings)
+                            ProfileSection.ADDRESSES -> stringResource(R.string.profile_title_addresses)
+                            ProfileSection.ORDERS -> stringResource(R.string.profile_title_orders)
                         }
                     )
                 },
                 navigationIcon = {
                     if (currentSection != ProfileSection.MENU) {
                         IconButton(onClick = { currentSection = ProfileSection.MENU }) {
-                            Icon(painterResource(R.drawable.arrow_back_24px), contentDescription = "Vrati se nazad")
+                            Icon(
+                                painterResource(R.drawable.arrow_back_24px),
+                                contentDescription = stringResource(R.string.content_desc_back_navigation)
+                            )
                         }
                     }
                 },
@@ -120,7 +124,7 @@ fun ProfileScreen(
     // Dialogs
     if (state.showEditNameDialog) {
         EditInputDialog(
-            title = "Promeni ime",
+            title = stringResource(R.string.dialog_title_change_name),
             initialValue = state.userName,
             isPassword = false,
             onConfirm = { profileViewModel.updateName(it) },
@@ -129,7 +133,7 @@ fun ProfileScreen(
     }
     if (state.showEditPasswordDialog) {
         EditInputDialog(
-            title = "Nova lozinka",
+            title = stringResource(R.string.dialog_title_new_password),
             initialValue = "",
             isPassword = true,
             onConfirm = { profileViewModel.updatePassword(it) },
@@ -138,10 +142,21 @@ fun ProfileScreen(
     if (state.showDeleteAccountDialog) {
         AlertDialog(
             onDismissRequest = { profileViewModel.toggleDeleteDialog(false) },
-            title = { Text("Obriši nalog") },
-            text = { Text("Da li ste sigurni? Ova radnja se ne može poništiti.") },
-            confirmButton = { Button(onClick = { profileViewModel.deleteAccount(onLogout) }, colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)) { Text("Obriši") } },
-            dismissButton = { TextButton(onClick = { profileViewModel.toggleDeleteDialog(false) }) { Text("Otkaži") } }
+            title = { Text(stringResource(R.string.dialog_title_delete_account)) },
+            text = { Text(stringResource(R.string.dialog_msg_delete_account_confirm)) },
+            confirmButton = {
+                Button(
+                    onClick = { profileViewModel.deleteAccount(onLogout) },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(stringResource(R.string.label_delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { profileViewModel.toggleDeleteDialog(false) }) {
+                    Text(stringResource(R.string.label_cancel))
+                }
+            }
         )
     }
 }
@@ -159,16 +174,16 @@ fun ProfileMenuContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp),
+                .padding(dimensionResource(R.dimen.padding_extra_large)),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = painterResource(R.drawable.account_circle_24px),
                 contentDescription = null,
-                modifier = Modifier.size(60.dp),
+                modifier = Modifier.size(dimensionResource(R.dimen.profile_avatar_size)),
                 tint = MaterialTheme.colorScheme.primary
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_medium)))
             Column {
                 Text(
                     text = userName,
@@ -184,36 +199,36 @@ fun ProfileMenuContent(
         }
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
 
         // Menu Rows organized in a vertical Column
         Column(modifier = Modifier.fillMaxWidth()) {
             ProfileMenuRow(
                 icon = painterResource(R.drawable.settings_24px),
-                title = "Podešavanja naloga",
-                subtitle = "Upravljaj sa nalogom",
+                title = stringResource(R.string.profile_title_settings),
+                subtitle = stringResource(R.string.profile_menu_subtitle_settings),
                 onClick = { onNavigateToSection(ProfileSection.PERSONAL_INFO) }
             )
             ProfileMenuRow(
                 icon = painterResource(R.drawable.location_on_24px),
-                title = "Upravljaj sa doatavnim adresama",
-                subtitle = "Dodaj, ažuriraj ili obriši dostavne adrese",
+                title = stringResource(R.string.profile_menu_title_addresses),
+                subtitle = stringResource(R.string.profile_menu_subtitle_addresses),
                 onClick = { onNavigateToSection(ProfileSection.ADDRESSES) }
             )
             ProfileMenuRow(
                 icon = painterResource(R.drawable.shopping_bag_24px),
-                title = "Pogledaj porudžbine",
-                subtitle = "Proveri istoriju porudžbina",
+                title = stringResource(R.string.profile_menu_title_orders),
+                subtitle = stringResource(R.string.profile_menu_subtitle_orders),
                 onClick = { onNavigateToSection(ProfileSection.ORDERS) }
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
             Button(
                 onClick = { authViewModel.logout(onLogout) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_small)))
                 Icon(painterResource(R.drawable.logout_24px), null)
-                Text("Odjavi se")
+                Text(stringResource(R.string.logout_button))
             }
         }
     }
@@ -235,16 +250,19 @@ fun ProfileMenuRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 16.dp),
+                .padding(
+                    horizontal = dimensionResource(R.dimen.padding_extra_large),
+                    vertical = dimensionResource(R.dimen.padding_medium)
+                ),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 painter = icon,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(dimensionResource(R.dimen.progress_indicator_size))
             )
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_medium)))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
@@ -260,14 +278,14 @@ fun ProfileMenuRow(
             }
             Icon(
                 painter = painterResource(R.drawable.chevron_right_24px),
-                contentDescription = "Idi na $title",
+                contentDescription = stringResource(R.string.content_desc_go_to_format, title),
                 tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(dimensionResource(R.dimen.progress_indicator_size))
             )
         }
         HorizontalDivider(
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f),
-            thickness = 1.dp
+            thickness = dimensionResource(R.dimen.divider_thickness)
         )
     }
 }
@@ -278,20 +296,20 @@ fun PersonalInfoSection(
     viewModel: ProfileViewModel,
     state: ProfileUiState
 ) {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
         ListItem(
-            headlineContent = { Text("Ime") },
+            headlineContent = { Text(stringResource(R.string.display_name_label)) },
             supportingContent = { Text(state.userName) },
             trailingContent = {
-            IconButton(
-                onClick = { viewModel.toggleNameDialog(true) })
-            {
-                Icon(painterResource(R.drawable.edit_24px), null)
-            }
-        })
+                IconButton(
+                    onClick = { viewModel.toggleNameDialog(true) })
+                {
+                    Icon(painterResource(R.drawable.edit_24px), null)
+                }
+            })
         HorizontalDivider()
         ListItem(
-            headlineContent = { Text("Lozinka") },
+            headlineContent = { Text(stringResource(R.string.password_label)) },
             supportingContent = { Text("••••••••") },
             trailingContent = {
                 IconButton(
@@ -300,15 +318,15 @@ fun PersonalInfoSection(
                     Icon(painterResource(R.drawable.edit_24px), null)
                 }
             })
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_large)))
         Button(
             onClick = { viewModel.toggleDeleteDialog(true) },
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
             modifier = Modifier.fillMaxWidth()
         ) {
             Icon(painterResource(R.drawable.delete_24px), null)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Obriši nalog")
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_small)))
+            Text(stringResource(R.string.dialog_title_delete_account))
         }
     }
 }
@@ -333,7 +351,15 @@ fun EditInputDialog(
                 visualTransformation = if (isPassword) PasswordVisualTransformation() else androidx.compose.ui.text.input.VisualTransformation.None
             )
         },
-        confirmButton = { Button(onClick = { onConfirm(text) }) { Text("Sačuvaj") } },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Otkaži") } }
+        confirmButton = {
+            Button(onClick = { onConfirm(text) }) {
+                Text(stringResource(R.string.label_save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.label_cancel))
+            }
+        }
     )
 }
