@@ -46,9 +46,9 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val res = profileRepository.updateName(newName)
             if (res is Resource.Success) {
-                _uiState.update { it.copy(userName = newName, showEditNameDialog = false, message = "Ime uspešno promenjeno!") }
+                _uiState.update { it.copy(userName = newName, showEditNameDialog = false, message = "Ime uspešno promenjeno!", errorMessage = null) }
             } else if (res is Resource.Error) {
-                _uiState.update { it.copy(errorMessage = res.message) }
+                _uiState.update { it.copy(errorMessage = res.message, message = null) }
             }
         }
     }
@@ -56,9 +56,9 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val res = profileRepository.updatePassword(newPassword)
             if (res is Resource.Success) {
-                _uiState.update { it.copy(showEditPasswordDialog = false, message = "Lozinka uspešno promenjena!") }
+                _uiState.update { it.copy(showEditPasswordDialog = false, message = "Lozinka uspešno promenjena!", errorMessage = null) }
             } else if (res is Resource.Error) {
-                _uiState.update { it.copy(errorMessage = res.message) }
+                _uiState.update { it.copy(errorMessage = res.message, message = null) }
             }
         }
     }
@@ -67,7 +67,7 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             val res = profileRepository.deleteAccount()
             if (res is Resource.Success) onDeleted()
-            else if (res is Resource.Error) _uiState.update { it.copy(errorMessage = res.message) }
+            else if (res is Resource.Error) _uiState.update { it.copy(errorMessage = res.message, message = null) }
         }
     }
 

@@ -1,6 +1,5 @@
 package com.example.rigcraft.ui.feature.profile
 
-import android.app.AlertDialog
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,7 +24,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
@@ -115,6 +113,7 @@ fun ProfileScreen(
                     authViewModel = authViewModel
                 )
                 ProfileSection.PERSONAL_INFO -> PersonalInfoSection(profileViewModel, state)
+                // TO DO: Implement Addresses and Orders sections and it's navigations
                 ProfileSection.ADDRESSES -> {}
                 ProfileSection.ORDERS -> {}
             }

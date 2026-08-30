@@ -4,6 +4,7 @@ import com.example.rigcraft.domain.repository.ProfileRepository
 import com.example.rigcraft.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class ProfileRepositoryImpl @Inject constructor(
             Resource.Success(Unit)
         }
         catch(e: Exception) {
+            if (e is CancellationException) throw e
             Resource.Error(e.message ?: "Greška pri promeni imena")
         }
     }
@@ -28,6 +30,7 @@ class ProfileRepositoryImpl @Inject constructor(
             user.updatePassword(newPassword).await()
             Resource.Success(Unit)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Resource.Error(e.message ?: "Greška pri promeni lozinke")
         }
     }
@@ -38,6 +41,7 @@ class ProfileRepositoryImpl @Inject constructor(
             user.delete().await()
             Resource.Success(Unit)
         } catch (e: Exception) {
+            if (e is CancellationException) throw e
             Resource.Error(e.message ?: "Greška pri brisanju naloga")
         }
     }
