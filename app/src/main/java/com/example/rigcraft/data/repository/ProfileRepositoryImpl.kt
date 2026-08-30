@@ -22,16 +22,6 @@ class ProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateEmail(newEmail: String): Resource<Unit> {
-        return try {
-            val user = auth.currentUser ?: return Resource.Error("Korisnik nije prijavljen")
-            user.verifyBeforeUpdateEmail(newEmail).await()
-            Resource.Success(Unit)
-        } catch (e: Exception) {
-            Resource.Error(e.message ?: "Greška pri promeni email adrese")
-        }
-    }
-
     override suspend fun updatePassword(newPassword: String): Resource<Unit> {
         return try {
             val user = auth.currentUser ?: return Resource.Error("Korisnik nije prijavljen")
