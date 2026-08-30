@@ -3,10 +3,12 @@ package com.example.rigcraft.di
 import com.example.rigcraft.data.repository.AuthRepositoryImpl
 import com.example.rigcraft.data.repository.CartRepositoryImpl
 import com.example.rigcraft.data.repository.ProductRepositoryImpl
+import com.example.rigcraft.data.repository.ProfileRepositoryImpl
 import com.example.rigcraft.data.repository.SeederRepositoryImpl
 import com.example.rigcraft.domain.repository.AuthRepository
 import com.example.rigcraft.domain.repository.CartRepository
 import com.example.rigcraft.domain.repository.ProductRepository
+import com.example.rigcraft.domain.repository.ProfileRepository
 import com.example.rigcraft.domain.repository.SeederRepository
 import dagger.Binds
 import dagger.Module
@@ -41,4 +43,10 @@ abstract class RepositoryModule {
     abstract fun bindCartRepository(
         impl: CartRepositoryImpl
     ): CartRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindProfileRepository(
+        impl: ProfileRepositoryImpl
+    ): ProfileRepository
 }

@@ -18,6 +18,7 @@ import com.example.rigcraft.ui.feature.details.ProductDetailsScreen
 import com.example.rigcraft.ui.feature.home.HomeScreen
 import com.example.rigcraft.ui.feature.search.SearchScreen
 import com.example.rigcraft.ui.feature.cart.CartScreen
+import com.example.rigcraft.ui.feature.profile.ProfileScreen
 
 @Composable
 fun NavGraph(
@@ -130,7 +131,17 @@ fun NavGraph(
                 onCheckoutClick = null
             )
         }
-        composable(route = Screen.Profile.route) {}
+        composable(route = Screen.Profile.route) {
+            ProfileScreen(
+                onLogout = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
 
         composable(
             route = Screen.Catalog.route,
