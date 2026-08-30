@@ -52,7 +52,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.unit.dp
 import com.example.rigcraft.R
 import com.example.rigcraft.data.model.AddressDto
 import androidx.compose.foundation.lazy.items
@@ -360,17 +359,17 @@ fun AddressesSection(viewModel: ProfileViewModel, state: ProfileUiState) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.addresses.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text("Nema adresa za dostavu")
+                Text(stringResource(R.string.msg_no_addresses_found))
             }
         } else {
             LazyColumn(
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                contentPadding = PaddingValues(dimensionResource(R.dimen.padding_medium)),
+                verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
             ) {
                 items(state.addresses) { address ->
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Row(
-                            modifier = Modifier.padding(16.dp),
+                            modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Column(modifier = Modifier.weight(1f)) {
@@ -378,10 +377,17 @@ fun AddressesSection(viewModel: ProfileViewModel, state: ProfileUiState) {
                                 Text("${address.phoneNumber}, ${address.street}, ${address.city}, ${address.zip}")
                             }
                             IconButton(onClick = { viewModel.editAddress(address) }) {
-                                Icon(painterResource(R.drawable.edit_24px), contentDescription = "Promeni adresu")
+                                Icon(
+                                    painterResource(R.drawable.edit_24px),
+                                    contentDescription = stringResource(R.string.content_desc_edit_address)
+                                )
                             }
-                            IconButton(onClick = { viewModel.deleteAddress(address.addressId)}) {
-                                Icon(painterResource(R.drawable.delete_24px), contentDescription = "Obriši adresu", tint = Color.Red)
+                            IconButton(onClick = { viewModel.deleteAddress(address.addressId) }) {
+                                Icon(
+                                    painterResource(R.drawable.delete_24px),
+                                    contentDescription = stringResource(R.string.content_desc_delete_address),
+                                    tint = Color.Red
+                                )
                             }
                         }
                     }
@@ -392,9 +398,12 @@ fun AddressesSection(viewModel: ProfileViewModel, state: ProfileUiState) {
             onClick = { viewModel.editAddress(AddressDto()) },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(16.dp)
+                .padding(dimensionResource(R.dimen.padding_medium))
         ) {
-            Icon(painterResource(R.drawable.add_24px), contentDescription = "Add Address")
+            Icon(
+                painterResource(R.drawable.add_24px),
+                contentDescription = stringResource(R.string.content_desc_add_address)
+            )
         }
     }
 }
@@ -450,75 +459,94 @@ fun AddressDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(if(address.addressId.isEmpty()) "Dodaj adresu" else "Promeni adresu")
+            Text(
+                if (address.addressId.isEmpty()) stringResource(R.string.dialog_title_add_address)
+                else stringResource(R.string.dialog_title_edit_address)
+            )
         },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))) {
                 OutlinedTextField(
                     value = state.name,
                     onValueChange = onNameChange,
-                    label = { Text("Ime i prezime") },
+                    label = { Text(stringResource(R.string.label_full_name)) },
                     isError = state.nameError != null,
                     supportingText = state.nameError?.let { { Text(it) } },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth().focusRequester(nameFR),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(nameFR),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { phoneFR.requestFocus() })
                 )
                 OutlinedTextField(
                     value = state.phoneNumber,
                     onValueChange = onPhoneChange,
-                    label = { Text("Broj telefona") },
+                    label = { Text(stringResource(R.string.label_phone_number)) },
                     isError = state.phoneError != null,
                     supportingText = state.phoneError?.let { { Text(it) } },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth().focusRequester(phoneFR),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(phoneFR),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Phone,
+                        imeAction = ImeAction.Next
+                    ),
                     keyboardActions = KeyboardActions(onNext = { streetFR.requestFocus() })
                 )
                 OutlinedTextField(
                     value = state.street,
                     onValueChange = onStreetChange,
-                    label = { Text("Adresa") },
+                    label = { Text(stringResource(R.string.label_street)) },
                     isError = state.streetError != null,
                     supportingText = state.streetError?.let { { Text(it) } },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth().focusRequester(streetFR),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(streetFR),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { cityFR.requestFocus() })
                 )
                 OutlinedTextField(
                     value = state.city,
                     onValueChange = onCityChange,
-                    label = { Text("Mesto") },
+                    label = { Text(stringResource(R.string.label_city)) },
                     isError = state.cityError != null,
                     supportingText = state.cityError?.let { { Text(it) } },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth().focusRequester(cityFR),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(cityFR),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { zipFR.requestFocus() })
                 )
                 OutlinedTextField(
                     value = state.zip,
                     onValueChange = onZipChange,
-                    label = { Text("Poštanski broj") },
+                    label = { Text(stringResource(R.string.label_zip_code)) },
                     isError = state.zipError != null,
                     supportingText = state.zipError?.let { { Text(it) } },
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth().focusRequester(zipFR),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(zipFR),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done
+                    ),
                     keyboardActions = KeyboardActions(onDone = { onSave() })
                 )
             }
         },
         confirmButton = {
             Button(onClick = onSave) {
-                Text("Sačuvaj")
+                Text(stringResource(R.string.label_save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Otkaži")
+                Text(stringResource(R.string.label_cancel))
             }
         }
     )
