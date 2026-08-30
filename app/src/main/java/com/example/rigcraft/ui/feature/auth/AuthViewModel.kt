@@ -137,9 +137,10 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun logout() {
+    fun logout(onLogout: () -> Unit) {
         viewModelScope.launch {
             repository.logout()
+            onLogout()
             _authState.value = Resource.Idle
             _isUserLoggedIn.value = false
         }

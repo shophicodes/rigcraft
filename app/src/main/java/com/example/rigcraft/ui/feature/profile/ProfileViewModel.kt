@@ -2,7 +2,6 @@ package com.example.rigcraft.ui.feature.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.rigcraft.domain.repository.AuthRepository
 import com.example.rigcraft.domain.repository.ProfileRepository
 import com.example.rigcraft.util.Resource
 import com.google.firebase.auth.FirebaseAuth
@@ -17,7 +16,6 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val authFirebase: FirebaseAuth,
-    private val authRepository: AuthRepository
 ): ViewModel() {
     private val currentUserId: String get() = authFirebase.currentUser?.uid ?: ""
 
