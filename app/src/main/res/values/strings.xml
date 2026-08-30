@@ -84,4 +84,15 @@
     <string name="profile_menu_title_orders">Pogledaj porudžbine</string>
     <string name="profile_menu_subtitle_orders">Proveri istoriju porudžbina</string>
     <string name="content_desc_go_to_format">Idi na %1$s</string>
+    <string name="msg_no_addresses_found">Nema adresa za dostavu</string>
+    <string name="content_desc_edit_address">Promeni adresu</string>
+    <string name="content_desc_delete_address">Obriši adresu</string>
+    <string name="content_desc_add_address">Dodaj adresu</string>
+    <string name="dialog_title_add_address">Dodaj adresu</string>
+    <string name="dialog_title_edit_address">Promeni adresu</string>
+    <string name="label_full_name">Ime i prezime</string>
+    <string name="label_phone_number">Broj telefona</string>
+    <string name="label_street">Adresa</string>
+    <string name="label_city">Mesto</string>
+    <string name="label_zip_code">Poštanski broj</string>
 </resources>

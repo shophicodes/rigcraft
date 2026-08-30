@@ -2,7 +2,9 @@ package com.example.rigcraft.ui.feature.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.rigcraft.data.model.AddressDto
 import com.example.rigcraft.domain.repository.ProfileRepository
+import com.example.rigcraft.util.FormValidation
 import com.example.rigcraft.util.Resource
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,6 +26,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadUserData()
+        observeAddresses()
     }
 
     private fun loadUserData() {
@@ -33,6 +36,20 @@ class ProfileViewModel @Inject constructor(
                 userName = user?.displayName ?: "Korisnik",
                 userEmail = user?.email ?: ""
             )
+        }
+    }
+
+    private fun observeAddresses() {
+        if (currentUserId.isEmpty()) return
+
+        viewModelScope.launch {
+            profileRepository.getAddresses(currentUserId).collect { res ->
+                if (res is Resource.Success) {
+                    _uiState.update { it.copy(addresses = res.data) }
+                } else if (res is Resource.Error) {
+                    _uiState.update { it.copy(errorMessage = res.message) }
+                }
+            }
         }
     }
 
@@ -84,6 +101,98 @@ class ProfileViewModel @Inject constructor(
     fun toggleDeleteDialog(show: Boolean) {
         _uiState.update {
             it.copy(showDeleteAccountDialog = show)
+        }
+    }
+
+    fun onAddressNameChanged(name: String) {
+        _uiState.update { it.copy(addressFormState = it.addressFormState.copy(name = name, nameError = null)) }
+    }
+
+    fun onAddressPhoneChanged(phone: String) {
+        _uiState.update { it.copy(addressFormState = it.addressFormState.copy(phoneNumber = phone, phoneError = null)) }
+    }
+
+    fun onAddressStreetChanged(street: String) {
+        _uiState.update { it.copy(addressFormState = it.addressFormState.copy(street = street, streetError = null)) }
+    }
+
+    fun onAddressCityChanged(city: String) {
+        _uiState.update { it.copy(addressFormState = it.addressFormState.copy(city = city, cityError = null)) }
+    }
+
+    fun onAddressZipChanged(zip: String) {
+        _uiState.update { it.copy(addressFormState = it.addressFormState.copy(zip = zip, zipError = null)) }
+    }
+
+    fun saveAddress() {
+        val form = _uiState.value.addressFormState
+        val addressToEdit = _uiState.value.addressToEdit ?: return
+
+        val nameRes = FormValidation.validateFullName(form.name)
+        val phoneRes = FormValidation.validatePhone(form.phoneNumber)
+        val streetRes = FormValidation.validateAddress(form.street)
+        val cityRes = FormValidation.validateCity(form.city)
+        val zipRes = FormValidation.validateZip(form.zip)
+
+        if (!nameRes.isValid || !phoneRes.isValid || !streetRes.isValid || !cityRes.isValid || !zipRes.isValid) {
+            _uiState.update {
+                it.copy(
+                    addressFormState = it.addressFormState.copy(
+                        nameError = nameRes.errorMessage,
+                        phoneError = phoneRes.errorMessage,
+                        streetError = streetRes.errorMessage,
+                        cityError = cityRes.errorMessage,
+                        zipError = zipRes.errorMessage
+                    )
+                )
+            }
+            return
+        }
+
+        viewModelScope.launch {
+            val res = profileRepository.saveAddress(
+                currentUserId,
+                addressToEdit.copy(
+                    fullName = form.name,
+                    phoneNumber = form.phoneNumber,
+                    street = form.street,
+                    city = form.city,
+                    zip = form.zip
+                )
+            )
+            if (res is Resource.Success) {
+                _uiState.update { it.copy(addressToEdit = null, message = "Adresa sačuvana!", errorMessage = null) }
+            } else if (res is Resource.Error) {
+                _uiState.update { it.copy(errorMessage = res.message, message = null) }
+            }
+        }
+    }
+
+    fun editAddress(address: AddressDto?) {
+        _uiState.update {
+            it.copy(
+                addressToEdit = address,
+                addressFormState = if (address != null) {
+                    AddressFormState(
+                        name = address.fullName,
+                        phoneNumber = address.phoneNumber,
+                        street = address.street,
+                        city = address.city,
+                        zip = address.zip
+                    )
+                } else {
+                    AddressFormState()
+                }
+            )
+        }
+    }
+
+    fun deleteAddress(addressId: String) {
+        viewModelScope.launch {
+            val res = profileRepository.deleteAddress(currentUserId, addressId)
+            if (res is Resource.Error) {
+                _uiState.update { it.copy(errorMessage = res.message, message = null) }
+            }
         }
     }
 
