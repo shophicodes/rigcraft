@@ -31,9 +31,9 @@ class SeederRepositoryImpl @Inject constructor(
             }
 
             batch.commit().await()
-            emit(Resource.Success("Successfully populated Firestore with categories & products!"))
+            emit(Resource.Success("Uspešno slanje kategorija i proizvoda u Firestore-u!"))
         } catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Failed to seed database"))
+            emit(Resource.Error(e.message ?: "Greška pri ažuriranju baze podataka"))
         }
     }
 }

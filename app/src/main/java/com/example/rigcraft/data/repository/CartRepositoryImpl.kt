@@ -25,7 +25,7 @@ class CartRepositoryImpl @Inject constructor(
                 Resource.Success(items) as Resource<List<CartItemDto>>
             }
             .catch { e ->
-                emit(Resource.Error(e.message ?: "Failed to fetch cart"))
+                emit(Resource.Error(e.message ?: "Greška pri učitavanju korpe"))
             }
     }
 
@@ -59,7 +59,7 @@ class CartRepositoryImpl @Inject constructor(
             }.await()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "Failed to add product to cart")
+            Resource.Error(e.message ?: "Greška pri dodavanju proizvoda u korpu")
         }
     }
 
@@ -77,7 +77,7 @@ class CartRepositoryImpl @Inject constructor(
                 .await()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "Failed to update quantity")
+            Resource.Error(e.message ?: "Greška pri menjanju količine")
         }
     }
 
@@ -91,7 +91,7 @@ class CartRepositoryImpl @Inject constructor(
                 .await()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "Failed to remove item")
+            Resource.Error(e.message ?: "Greška pri uklanjanju proizvoda")
         }
     }
 
@@ -110,7 +110,7 @@ class CartRepositoryImpl @Inject constructor(
             batch.commit().await()
             Resource.Success(Unit)
         } catch (e: Exception) {
-            Resource.Error(e.message ?: "Failed to clear cart")
+            Resource.Error(e.message ?: "Greška pri brisanju korpe")
         }
     }
 }

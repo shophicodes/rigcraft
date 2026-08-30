@@ -40,7 +40,7 @@ class AuthRepositoryImpl @Inject constructor(
             emit(Resource.Success(true))
         }
         catch(e: Exception) {
-            emit(Resource.Error(e.message ?: "Login error"))
+            emit(Resource.Error(e.message ?: "Greška pri prijavljivanju"))
         }
     }
 
@@ -54,7 +54,7 @@ class AuthRepositoryImpl @Inject constructor(
             val account = firebaseAuth.createUserWithEmailAndPassword(email, pass).await()
 
             // Write user data to "users" collection in Firestore
-            val uid = account.user?.uid ?: throw Exception("User creation failed")
+            val uid = account.user?.uid ?: throw Exception("Greška pri pravljenju korisnika")
 
             try {
                 firestore.collection("users")
@@ -76,7 +76,7 @@ class AuthRepositoryImpl @Inject constructor(
             }
         }
         catch(e: Exception) {
-            emit(Resource.Error(e.message ?: "Sign up error"))
+            emit(Resource.Error(e.message ?: "Greška pri registrovanju"))
         }
     }
 
