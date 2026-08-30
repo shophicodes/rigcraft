@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.snapshots
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -64,6 +65,10 @@ class ProfileRepositoryImpl @Inject constructor(
                 } catch (e: Exception) {
                     Resource.Error(e.message ?: "Greška pri učitavanju adresa za dostavu")
                 }
+            }
+            .catch { e ->
+                if (e is CancellationException) throw e
+                emit(Resource.Error(e.message ?: "Greška pri učitavanju adresa za dostavu"))
             }
     }
 

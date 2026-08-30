@@ -367,6 +367,32 @@ fun AddressesSection(viewModel: ProfileViewModel, state: ProfileUiState) {
                 verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
             ) {
                 items(state.addresses) { address ->
+                    var showConfirmDeleteDialog by remember { mutableStateOf(false) }
+
+                    if (showConfirmDeleteDialog) {
+                        AlertDialog(
+                            onDismissRequest = { showConfirmDeleteDialog = false },
+                            title = { Text(stringResource(R.string.content_desc_delete_address)) },
+                            text = { Text(stringResource(R.string.dialog_msg_delete_account_confirm)) },
+                            confirmButton = {
+                                Button(
+                                    onClick = {
+                                        viewModel.deleteAddress(address.addressId)
+                                        showConfirmDeleteDialog = false
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                                ) {
+                                    Text(stringResource(R.string.label_delete))
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(onClick = { showConfirmDeleteDialog = false }) {
+                                    Text(stringResource(R.string.label_cancel))
+                                }
+                            }
+                        )
+                    }
+
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Row(
                             modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium)),
@@ -382,7 +408,7 @@ fun AddressesSection(viewModel: ProfileViewModel, state: ProfileUiState) {
                                     contentDescription = stringResource(R.string.content_desc_edit_address)
                                 )
                             }
-                            IconButton(onClick = { viewModel.deleteAddress(address.addressId) }) {
+                            IconButton(onClick = { showConfirmDeleteDialog = true }) {
                                 Icon(
                                     painterResource(R.drawable.delete_24px),
                                     contentDescription = stringResource(R.string.content_desc_delete_address),

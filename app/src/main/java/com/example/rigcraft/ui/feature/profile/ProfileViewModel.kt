@@ -44,7 +44,11 @@ class ProfileViewModel @Inject constructor(
 
         viewModelScope.launch {
             profileRepository.getAddresses(currentUserId).collect { res ->
-                if (res is Resource.Success) _uiState.update { it.copy(addresses = res.data) }
+                if (res is Resource.Success) {
+                    _uiState.update { it.copy(addresses = res.data) }
+                } else if (res is Resource.Error) {
+                    _uiState.update { it.copy(errorMessage = res.message) }
+                }
             }
         }
     }
@@ -146,7 +150,7 @@ class ProfileViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            profileRepository.saveAddress(
+            val res = profileRepository.saveAddress(
                 currentUserId,
                 addressToEdit.copy(
                     fullName = form.name,
@@ -156,7 +160,11 @@ class ProfileViewModel @Inject constructor(
                     zip = form.zip
                 )
             )
-            _uiState.update { it.copy(addressToEdit = null) }
+            if (res is Resource.Success) {
+                _uiState.update { it.copy(addressToEdit = null, message = "Adresa sačuvana!", errorMessage = null) }
+            } else if (res is Resource.Error) {
+                _uiState.update { it.copy(errorMessage = res.message, message = null) }
+            }
         }
     }
 
@@ -181,7 +189,10 @@ class ProfileViewModel @Inject constructor(
 
     fun deleteAddress(addressId: String) {
         viewModelScope.launch {
-            profileRepository.deleteAddress(currentUserId, addressId)
+            val res = profileRepository.deleteAddress(currentUserId, addressId)
+            if (res is Resource.Error) {
+                _uiState.update { it.copy(errorMessage = res.message, message = null) }
+            }
         }
     }
 
