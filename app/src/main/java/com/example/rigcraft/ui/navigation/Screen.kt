@@ -34,6 +34,12 @@ sealed class Screen(
         }
     }
 
+    // Checkout and Orders
+    object Checkout: Screen("checkout", R.string.nav_confirm_order, 0)
+    object OrderDetails: Screen("orderDetails/{orderId}", R.string.nav_order_info, 0) {
+        fun createRoute(orderId: String) = "orderDetails/$orderId"
+    }
+    
     companion object {
         val bottomNavItems = listOf(Home, Wishlist, Search, Cart, Profile)
     }

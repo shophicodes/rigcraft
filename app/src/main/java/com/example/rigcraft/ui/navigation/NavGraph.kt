@@ -19,6 +19,10 @@ import com.example.rigcraft.ui.feature.home.HomeScreen
 import com.example.rigcraft.ui.feature.search.SearchScreen
 import com.example.rigcraft.ui.feature.cart.CartScreen
 import com.example.rigcraft.ui.feature.profile.ProfileScreen
+import com.example.rigcraft.ui.feature.order.OrderScreen
+import com.example.rigcraft.ui.feature.order.OrderDetailScreen
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun NavGraph(
@@ -128,7 +132,26 @@ fun NavGraph(
         }
         composable(route = Screen.Cart.route) {
             CartScreen(
-                onCheckoutClick = null
+                onCheckoutClick = {
+                    navController.navigate(Screen.Checkout.route)
+                }
+            )
+        }
+        composable(route = Screen.Checkout.route) {
+            val context = LocalContext.current
+            OrderScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
+                    }
+                },
+                onNavigateToAddAddress = {
+                    navController.navigate(Screen.Profile.route) // Redirect to profile to add address
+                },
+                onOrderPlaced = { message ->
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+                }
             )
         }
         composable(route = Screen.Profile.route) {
@@ -139,7 +162,20 @@ fun NavGraph(
                             inclusive = true
                         }
                     }
+                },
+                onOrderClick = { orderId ->
+                    navController.navigate(Screen.OrderDetails.createRoute(orderId))
                 }
+            )
+        }
+        composable(
+            route = Screen.OrderDetails.route,
+            arguments = listOf(
+                navArgument("orderId") { type = NavType.StringType }
+            )
+        ) {
+            OrderDetailScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
 
