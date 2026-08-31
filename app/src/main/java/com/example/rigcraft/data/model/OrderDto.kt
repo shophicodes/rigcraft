@@ -14,7 +14,7 @@ data class OrderDto(
     val totalAmount: Double = 0.0,
     val orderStatus: String = "",
     val shippingAddress: AddressDto? = null,
-    val paymentMethod: String = "SIMULATED_CARD",
+    val paymentMethod: String = "CASH_ON_DELIVERY",
     @ServerTimestamp val createdAt: Timestamp? = null
 )
 
