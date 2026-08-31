@@ -34,6 +34,9 @@ sealed class Screen(
         }
     }
 
+    // Checkout and Orders
+    object Checkout: Screen("checkout", R.string.nav_confirm_order, 0)
+    
     companion object {
         val bottomNavItems = listOf(Home, Wishlist, Search, Cart, Profile)
     }

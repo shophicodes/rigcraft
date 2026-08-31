@@ -160,4 +160,25 @@ class ProductRepositoryImpl @Inject constructor(
             emit(Resource.Error(e.message ?: "Greška pri učitavanju proizvoda po ID-u"))
         }
     }
+
+    override suspend fun updateProductStock(productId: String, quantityChange: Int): Resource<Unit> {
+        return try {
+            val productRef = firestore.collection("products").document(productId)
+            firestore.runTransaction { transaction ->
+                val snapshot = transaction.get(productRef)
+                val currentStock = snapshot.getLong("stockQuantity") ?: 0L
+                val newStock = currentStock + quantityChange
+                
+                if (newStock < 0) {
+                    throw Exception("Nedovoljno proizvoda na stanju")
+                }
+                
+                transaction.update(productRef, "stockQuantity", newStock)
+                transaction.update(productRef, "inStock", newStock > 0)
+            }.await()
+            Resource.Success(Unit)
+        } catch (e: Exception) {
+            Resource.Error(e.message ?: "Greška pri ažuriranju zaliha")
+        }
+    }
 }

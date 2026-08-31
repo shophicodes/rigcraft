@@ -95,4 +95,13 @@
     <string name="label_street">Adresa</string>
     <string name="label_city">Mesto</string>
     <string name="label_zip_code">Poštanski broj</string>
+    <string name="nav_address_select">Izaberi adresu</string>
+    <string name="nav_confirm_order">Potvrdi porudžbinu</string>
+    <string name="nav_order_info">Informacije o porudžbini</string>
+    <string name="msg_order_success">Vaša porudžbina je uspešno kreirana!</string>
+    <string name="label_check_order_history">Pogledaj istoriju porudžbina</string>
+    <string name="label_cash_on_delivery">Plaćanje pouzećem</string>
+    <string name="order_id_format">ID porudžbine: %1$s</string>
+    <string name="order_date_format">Datum: %1$s</string>
+    <string name="order_status_format">Status: %1$s</string>
 </resources>

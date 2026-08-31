@@ -47,7 +47,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.rigcraft.ui.feature.auth.AuthViewModel
+import com.example.rigcraft.ui.feature.order.OrderViewModel
+import com.example.rigcraft.data.model.OrderDto
+import java.text.SimpleDateFormat
+import java.util.Locale
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.ui.graphics.Color
@@ -68,8 +73,10 @@ fun ProfileScreen(
     onLogout: () -> Unit,
     authViewModel: AuthViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel(),
+    orderViewModel: OrderViewModel = hiltViewModel()
 ) {
     val state by profileViewModel.uiState.collectAsStateWithLifecycle()
+    val orders by orderViewModel.orders.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     var currentSection by remember { mutableStateOf(ProfileSection.MENU) }
 
@@ -125,7 +132,7 @@ fun ProfileScreen(
                 ProfileSection.PERSONAL_INFO -> PersonalInfoSection(profileViewModel, state)
                 // TO DO: Implement Addresses and Orders sections and it's navigations
                 ProfileSection.ADDRESSES -> AddressesSection(profileViewModel, state)
-                ProfileSection.ORDERS -> {}
+                ProfileSection.ORDERS -> OrdersSection(orders)
             }
         }
     }
@@ -469,6 +476,76 @@ fun EditInputDialog(
 }
 
 @Composable
+fun OrdersSection(orders: List<OrderDto>) {
+    if (orders.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text(stringResource(R.string.msg_no_products_found)) // Reusing string or add specific
+        }
+    } else {
+        LazyColumn(
+            contentPadding = PaddingValues(dimensionResource(R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
+        ) {
+            items(orders) { order ->
+                OrderHistoryCard(order)
+            }
+        }
+    }
+}
+
+@Composable
+fun OrderHistoryCard(order: OrderDto) {
+    val dateFormat = remember { SimpleDateFormat("dd.MM.yyyy. HH:mm", Locale.getDefault()) }
+    val dateString = order.createdAt?.toDate()?.let { dateFormat.format(it) } ?: ""
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+    ) {
+        Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(
+                    text = stringResource(R.string.order_id_format, order.orderId.takeLast(8)),
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = order.orderStatus,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
+            Text(text = stringResource(R.string.order_date_format, dateString), style = MaterialTheme.typography.bodySmall)
+            
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+            HorizontalDivider(
+                thickness = dimensionResource(R.dimen.divider_thickness),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
+            )
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+            
+            order.items.forEach { item ->
+                Text(
+                    text = "${item.quantity}x ${item.title}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    maxLines = 1
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text(text = stringResource(R.string.label_total), fontWeight = FontWeight.SemiBold)
+                Text(
+                    text = stringResource(R.string.price_format, order.totalAmount, stringResource(R.string.currency_rsd)),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun AddressDialog(
     address: AddressDto,
     state: AddressFormState,
@@ -577,3 +654,4 @@ fun AddressDialog(
         }
     )
 }
+
