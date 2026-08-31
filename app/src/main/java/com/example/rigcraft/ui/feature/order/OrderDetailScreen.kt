@@ -104,7 +104,7 @@ fun OrderDetailContent(order: OrderDto) {
         // Shipping Address
         item {
             Text(
-                text = stringResource(R.string.profile_title_addresses),
+                text = stringResource(R.string.order_address_title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold
             )
