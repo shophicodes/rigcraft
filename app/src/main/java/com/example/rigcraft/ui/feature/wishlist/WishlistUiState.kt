@@ -4,5 +4,6 @@ import com.example.rigcraft.data.model.ProductDto
 
 data class WishlistUiState(
     val items: List<ProductDto> = emptyList(),
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )

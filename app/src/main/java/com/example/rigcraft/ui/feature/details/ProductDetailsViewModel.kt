@@ -132,6 +132,12 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     fun toggleWishlist(product: ProductDto) {
+        val userId = authRepository.getCurrentUser()
+        if (userId == null) {
+            _uiState.update { it.copy(cartErrorMessage = "Prijavite se da biste mogli dodavati proizvode u listu želja") }
+            return
+        }
+
         viewModelScope.launch {
             if (isWishlisted.value) {
                 wishlistRepository.removeFromWishlist(product.id)

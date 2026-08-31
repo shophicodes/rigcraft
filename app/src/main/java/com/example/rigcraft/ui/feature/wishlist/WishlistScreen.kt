@@ -115,7 +115,7 @@ fun WishlistItemCard(
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    if (discountPrice > 0) {
+                    if (product.discountPercent > 0) {
                         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_small)))
                         Text(
                             text = stringResource(R.string.price_format, product.price, stringResource(R.string.currency_rsd)),
