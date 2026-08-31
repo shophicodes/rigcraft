@@ -32,4 +32,6 @@
     <dimen name="button_height_large">56dp</dimen>
     <dimen name="elevation_small">8dp</dimen>
     <dimen name="corner_radius_small">8dp</dimen>
+    <dimen name="wishlist_heart_icon_size">28dp</dimen>
+    <dimen name="wishlist_item_image_size">70dp</dimen>
 </resources>

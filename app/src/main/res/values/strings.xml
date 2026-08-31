@@ -106,4 +106,8 @@
     <string name="order_status_format">Status: %1$s</string>
     <string name="order_address_title">Dostavna Adresa</string>
     <string name="msg_no_orders_found">Nema pronađenih porudžbina.</string>
+    <string name="title_wishlist_count">Omiljeno (%1$d)</string>
+    <string name="msg_empty_wishlist">Nema omiljenih proizvoda</string>
+    <string name="content_desc_remove_from_wishlist">Ukloni iz omiljenih</string>
+    <string name="content_desc_add_to_wishlist">Dodaj u omiljeno</string>
 </resources>
