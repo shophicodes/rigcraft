@@ -20,7 +20,7 @@ import com.example.rigcraft.ui.feature.search.SearchScreen
 import com.example.rigcraft.ui.feature.cart.CartScreen
 import com.example.rigcraft.ui.feature.profile.ProfileScreen
 import com.example.rigcraft.ui.feature.order.OrderScreen
-import com.example.rigcraft.R
+import com.example.rigcraft.ui.feature.order.OrderDetailScreen
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 
@@ -162,7 +162,20 @@ fun NavGraph(
                             inclusive = true
                         }
                     }
+                },
+                onOrderClick = { orderId ->
+                    navController.navigate(Screen.OrderDetails.createRoute(orderId))
                 }
+            )
+        }
+        composable(
+            route = Screen.OrderDetails.route,
+            arguments = listOf(
+                navArgument("orderId") { type = NavType.StringType }
+            )
+        ) {
+            OrderDetailScreen(
+                onBackClick = { navController.popBackStack() }
             )
         }
 

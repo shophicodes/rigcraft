@@ -71,6 +71,7 @@ import androidx.compose.ui.text.input.KeyboardType
 @Composable
 fun ProfileScreen(
     onLogout: () -> Unit,
+    onOrderClick: (String) -> Unit,
     authViewModel: AuthViewModel = hiltViewModel(),
     profileViewModel: ProfileViewModel = hiltViewModel(),
     orderViewModel: OrderViewModel = hiltViewModel()
@@ -132,7 +133,7 @@ fun ProfileScreen(
                 ProfileSection.PERSONAL_INFO -> PersonalInfoSection(profileViewModel, state)
                 // TO DO: Implement Addresses and Orders sections and it's navigations
                 ProfileSection.ADDRESSES -> AddressesSection(profileViewModel, state)
-                ProfileSection.ORDERS -> OrdersSection(orders)
+                ProfileSection.ORDERS -> OrdersSection(orders, onOrderClick)
             }
         }
     }
@@ -476,7 +477,7 @@ fun EditInputDialog(
 }
 
 @Composable
-fun OrdersSection(orders: List<OrderDto>) {
+fun OrdersSection(orders: List<OrderDto>, onOrderClick: (String) -> Unit) {
     if (orders.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text(stringResource(R.string.msg_no_products_found)) // Reusing string or add specific
@@ -487,19 +488,21 @@ fun OrdersSection(orders: List<OrderDto>) {
             verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small))
         ) {
             items(orders) { order ->
-                OrderHistoryCard(order)
+                OrderHistoryCard(order, onClick = { onOrderClick(order.orderId) })
             }
         }
     }
 }
 
 @Composable
-fun OrderHistoryCard(order: OrderDto) {
+fun OrderHistoryCard(order: OrderDto, onClick: () -> Unit) {
     val dateFormat = remember { SimpleDateFormat("dd.MM.yyyy. HH:mm", Locale.getDefault()) }
     val dateString = order.createdAt?.toDate()?.let { dateFormat.format(it) } ?: ""
 
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))) {
@@ -516,31 +519,6 @@ fun OrderHistoryCard(order: OrderDto) {
             }
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
             Text(text = stringResource(R.string.order_date_format, dateString), style = MaterialTheme.typography.bodySmall)
-            
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-            HorizontalDivider(
-                thickness = dimensionResource(R.dimen.divider_thickness),
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-            
-            order.items.forEach { item ->
-                Text(
-                    text = "${item.quantity}x ${item.title}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 1
-                )
-            }
-            
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_small)))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(text = stringResource(R.string.label_total), fontWeight = FontWeight.SemiBold)
-                Text(
-                    text = stringResource(R.string.price_format, order.totalAmount, stringResource(R.string.currency_rsd)),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold
-                )
-            }
         }
     }
 }
