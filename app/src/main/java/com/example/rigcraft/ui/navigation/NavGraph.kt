@@ -23,6 +23,7 @@ import com.example.rigcraft.ui.feature.order.OrderScreen
 import com.example.rigcraft.ui.feature.order.OrderDetailScreen
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
+import com.example.rigcraft.ui.feature.wishlist.WishlistScreen
 
 @Composable
 fun NavGraph(
@@ -122,7 +123,13 @@ fun NavGraph(
                 }
             )
         }
-        composable(route = Screen.Wishlist.route) {}
+        composable(route = Screen.Wishlist.route) {
+            WishlistScreen(
+                onProductClick = { productId ->
+                    navController.navigate(Screen.ProductDetails.createRoute(productId))
+                }
+            )
+        }
         composable(route = Screen.Search.route) {
             SearchScreen(
                 onProductClick = { productId ->

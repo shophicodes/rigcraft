@@ -6,12 +6,14 @@ import com.example.rigcraft.data.repository.OrderRepositoryImpl
 import com.example.rigcraft.data.repository.ProductRepositoryImpl
 import com.example.rigcraft.data.repository.ProfileRepositoryImpl
 import com.example.rigcraft.data.repository.SeederRepositoryImpl
+import com.example.rigcraft.data.repository.WishlistRepositoryImpl
 import com.example.rigcraft.domain.repository.AuthRepository
 import com.example.rigcraft.domain.repository.CartRepository
 import com.example.rigcraft.domain.repository.OrderRepository
 import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.domain.repository.ProfileRepository
 import com.example.rigcraft.domain.repository.SeederRepository
+import com.example.rigcraft.domain.repository.WishlistRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -57,4 +59,10 @@ abstract class RepositoryModule {
     abstract fun bindOrderRepository(
         impl: OrderRepositoryImpl
     ): OrderRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindWishlistRepository(
+        impl: WishlistRepositoryImpl
+    ): WishlistRepository
 }

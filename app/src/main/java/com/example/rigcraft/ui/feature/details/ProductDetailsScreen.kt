@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.rigcraft.data.model.ProductDto
 import kotlinx.coroutines.flow.collectLatest
+import androidx.compose.runtime.collectAsState
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -230,22 +231,49 @@ fun ProductDetailsScreen(
                         product.price * (1 - product.discountPercent / 100.0)
                     } else product.price
 
-                    Column {
-                        Text(
-                            text = stringResource(R.string.price_format, finalPrice, stringResource(R.string.currency_rsd)),
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                        if (product.discountPercent > 0) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                horizontal = dimensionResource(R.dimen.padding_medium),
+                                vertical = dimensionResource(R.dimen.padding_small)
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
                             Text(
-                                text = stringResource(R.string.price_format, product.price, stringResource(R.string.currency_rsd)),
-                                style = MaterialTheme.typography.bodyMedium,
-                                textDecoration = TextDecoration.LineThrough,
-                                color = Color.Gray
+                                text = stringResource(R.string.price_format, finalPrice, stringResource(R.string.currency_rsd)),
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                            if (product.discountPercent > 0) {
+                                Text(
+                                    text = stringResource(R.string.price_format, product.price, stringResource(R.string.currency_rsd)),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    textDecoration = TextDecoration.LineThrough,
+                                    color = Color.Gray
+                                )
+                            }
+                        }
+
+                        IconButton(
+                            onClick = { viewModel.toggleWishlist(product) }
+                        ) {
+                            val isWishlisted = viewModel.isWishlisted.collectAsState().value
+                            Icon(
+                                painter = painterResource(R.drawable.favorite_24px),
+                                contentDescription = if (isWishlisted)
+                                    stringResource(R.string.content_desc_remove_from_wishlist)
+                                else stringResource(R.string.content_desc_add_to_wishlist),
+                                tint = if (isWishlisted)
+                                    Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(dimensionResource(R.dimen.wishlist_heart_icon_size))
                             )
                         }
                     }
+
 
                     Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_medium)))
 

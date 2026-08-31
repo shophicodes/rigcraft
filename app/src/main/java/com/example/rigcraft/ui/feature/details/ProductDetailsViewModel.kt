@@ -7,13 +7,17 @@ import com.example.rigcraft.data.model.ProductDto
 import com.example.rigcraft.domain.repository.AuthRepository
 import com.example.rigcraft.domain.repository.CartRepository
 import com.example.rigcraft.domain.repository.ProductRepository
+import com.example.rigcraft.domain.repository.WishlistRepository
 import com.example.rigcraft.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -23,6 +27,7 @@ class ProductDetailsViewModel @Inject constructor(
     private val productRepository: ProductRepository,
     private val cartRepository: CartRepository,
     private val authRepository: AuthRepository,
+    private val wishlistRepository: WishlistRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val productId: String = checkNotNull(savedStateHandle["productId"])
@@ -32,6 +37,9 @@ class ProductDetailsViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<DetailsUiEvent>()
     val eventFlow: SharedFlow<DetailsUiEvent> = _eventFlow.asSharedFlow()
+
+    val isWishlisted: StateFlow<Boolean> = wishlistRepository.isProductInWishlist(productId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
     init {
         loadProduct()
@@ -119,6 +127,16 @@ class ProductDetailsViewModel @Inject constructor(
                 else -> {
                     _uiState.update { it.copy(isAddingToCart = false) }
                 }
+            }
+        }
+    }
+
+    fun toggleWishlist(product: ProductDto) {
+        viewModelScope.launch {
+            if (isWishlisted.value) {
+                wishlistRepository.removeFromWishlist(product.id)
+            } else {
+                wishlistRepository.addToWishlist(product)
             }
         }
     }
