@@ -36,7 +36,10 @@ fun OrderDetailScreen(
                 title = { Text(stringResource(R.string.nav_order_info)) },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(painterResource(R.drawable.arrow_back_24px), contentDescription = null)
+                        Icon(
+                            painterResource(R.drawable.arrow_back_24px),
+                            contentDescription = stringResource(R.string.content_desc_back_navigation)
+                        )
                     }
                 }
             )

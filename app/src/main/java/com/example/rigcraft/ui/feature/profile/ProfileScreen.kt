@@ -480,7 +480,7 @@ fun EditInputDialog(
 fun OrdersSection(orders: List<OrderDto>, onOrderClick: (String) -> Unit) {
     if (orders.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(stringResource(R.string.msg_no_products_found)) // Reusing string or add specific
+            Text(stringResource(R.string.msg_no_orders_found))
         }
     } else {
         LazyColumn(

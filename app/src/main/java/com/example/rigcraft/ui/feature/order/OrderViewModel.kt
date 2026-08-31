@@ -8,7 +8,6 @@ import com.example.rigcraft.data.model.OrderDto
 import com.example.rigcraft.domain.repository.AuthRepository
 import com.example.rigcraft.domain.repository.CartRepository
 import com.example.rigcraft.domain.repository.OrderRepository
-import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.domain.repository.ProfileRepository
 import com.example.rigcraft.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,9 +24,7 @@ class OrderViewModel @Inject constructor(
     private val cartRepository: CartRepository,
     private val profileRepository: ProfileRepository,
     private val orderRepository: OrderRepository,
-    private val productRepository: ProductRepository,
     private val authRepository: AuthRepository,
-    savedStateHandle: SavedStateHandle
 ): ViewModel() {
     private val _uiState = MutableStateFlow(OrderUiState())
     val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()
@@ -49,14 +46,20 @@ class OrderViewModel @Inject constructor(
                 cartRepository.getCartItems(userId),
                 profileRepository.getAddresses(userId)
             ) { cartResource, addressResource ->
-                val cartItems = if (cartResource is Resource.Success) cartResource.data else emptyList()
-                val addresses = if (addressResource is Resource.Success) addressResource.data else emptyList()
+                val cartItems = if (cartResource is Resource.Success) cartResource.data else _uiState.value.cartItems
+                val addresses = if (addressResource is Resource.Success) addressResource.data else _uiState.value.addresses
                 
+                val errorMessage = when {
+                    cartResource is Resource.Error -> cartResource.message
+                    addressResource is Resource.Error -> addressResource.message
+                    else -> null
+                }
+
                 val subtotal = cartItems.sumOf { it.price * it.quantity }
                 val shipping = if (subtotal > 10000.0 || cartItems.isEmpty()) 0.0 else 300.0
                 val finalTotal = subtotal + shipping
 
-                val selectedAddress = if (addresses.size == 1) addresses.first() else null
+                val selectedAddress = if (addresses.size == 1) addresses.first() else _uiState.value.selectedAddress
 
                 _uiState.update {
                     it.copy(
@@ -65,7 +68,7 @@ class OrderViewModel @Inject constructor(
                         addresses = addresses,
                         totalPrice = finalTotal,
                         selectedAddress = selectedAddress,
-                        errorMessage = null
+                        errorMessage = errorMessage
                     )
                 }
             }.collect {}
@@ -86,13 +89,15 @@ class OrderViewModel @Inject constructor(
     }
 
     fun placeOrder() {
+        if (_uiState.value.isLoading) return
+        
         val currentState = _uiState.value
         val userId = authRepository.getCurrentUser() ?: return
         val address = currentState.selectedAddress ?: return
 
+        _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
-            
             val order = OrderDto(
                 userId = userId,
                 items = currentState.cartItems,
@@ -103,31 +108,27 @@ class OrderViewModel @Inject constructor(
                 paymentMethod = "CASH_ON_DELIVERY"
             )
 
-            try {
-                // 1. Save order
-                orderRepository.saveOrder(order)
-                
-                // 2. Update inventory
-                currentState.cartItems.forEach { item ->
-                    productRepository.updateProductStock(item.productId, -item.quantity)
+            when (val result = orderRepository.checkout(order)) {
+                is Resource.Success -> {
+                    cartRepository.clearCart(userId)
+                    _uiState.update { 
+                        it.copy(
+                            isLoading = false,
+                            orderPlacedSuccessfully = true,
+                            errorMessage = null
+                        ) 
+                    }
                 }
-                
-                // 3. Clear cart
-                cartRepository.clearCart(userId)
-                
-                _uiState.update { 
-                    it.copy(
-                        isLoading = false,
-                        orderPlacedSuccessfully = true,
-                        errorMessage = null
-                    ) 
+                is Resource.Error -> {
+                    _uiState.update { 
+                        it.copy(
+                            isLoading = false, 
+                            errorMessage = result.message
+                        ) 
+                    }
                 }
-            } catch (e: Exception) {
-                _uiState.update { 
-                    it.copy(
-                        isLoading = false, 
-                        errorMessage = e.message ?: "Greška pri naručivanju"
-                    ) 
+                else -> {
+                    _uiState.update { it.copy(isLoading = false) }
                 }
             }
         }

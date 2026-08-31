@@ -105,4 +105,5 @@
     <string name="order_date_format">Datum: %1$s</string>
     <string name="order_status_format">Status: %1$s</string>
     <string name="order_address_title">Dostavna Adresa</string>
+    <string name="msg_no_orders_found">Nema pronađenih porudžbina.</string>
 </resources>
