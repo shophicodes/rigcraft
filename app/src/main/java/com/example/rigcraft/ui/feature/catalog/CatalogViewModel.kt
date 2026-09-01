@@ -81,7 +81,6 @@ class CatalogViewModel @Inject constructor(
             SortOption.NEWEST -> rawList.sortedByDescending { it.createdAt }
             SortOption.PRICE_LOW_TO_HIGH -> rawList.sortedBy { it.price }
             SortOption.PRICE_HIGH_TO_LOW -> rawList.sortedByDescending { it.price }
-            SortOption.HIGHEST_RATED -> rawList.sortedByDescending { it.ratingAverage }
         }
     }
 
