@@ -5,7 +5,6 @@ import com.example.rigcraft.data.model.AddressDto
 data class ProfileUiState(
     val userName: String = "",
     val userEmail: String = "",
-    val selectedTab: Int = 0, // 0: Informacije o korisniku, 1: Dostavne adrese, 2: Istorija porudžbina
     val addresses: List<AddressDto> = emptyList(),
     val isLoading: Boolean = false,
     val message: String? = null,

@@ -10,12 +10,9 @@ import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.domain.repository.WishlistRepository
 import com.example.rigcraft.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -34,9 +31,6 @@ class ProductDetailsViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ProductDetailsUiState())
     val uiState = _uiState.asStateFlow()
-
-    private val _eventFlow = MutableSharedFlow<DetailsUiEvent>()
-    val eventFlow: SharedFlow<DetailsUiEvent> = _eventFlow.asSharedFlow()
 
     val isWishlisted: StateFlow<Boolean> = wishlistRepository.isProductInWishlist(productId)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)

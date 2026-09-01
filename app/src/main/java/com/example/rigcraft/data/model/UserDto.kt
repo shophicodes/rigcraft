@@ -10,7 +10,5 @@ data class UserDto(
     @DocumentId val uid: String = "",
     val email: String = "",
     val displayName: String = "",
-    val savedAddresses: List<AddressDto> = emptyList(),
-    val wishlist: List<String> = emptyList(),
     @ServerTimestamp val createdAt: Timestamp? = null
 )

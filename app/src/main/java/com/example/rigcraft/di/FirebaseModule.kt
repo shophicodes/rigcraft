@@ -1,10 +1,8 @@
 package com.example.rigcraft.di
 
-import com.example.rigcraft.data.repository.AuthRepositoryImpl
 import com.example.rigcraft.domain.repository.AuthRepository
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

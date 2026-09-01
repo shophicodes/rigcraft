@@ -9,17 +9,11 @@ interface ProductRepository {
     fun getCategories(): Flow<Resource<List<CategoryDto>>>
     fun getRecentProducts(): Flow<Resource<List<ProductDto>>>
     fun getProductsOnSale(): Flow<Resource<List<ProductDto>>>
-    fun getProductsByCategory(categoryId: String): Flow<Resource<List<ProductDto>>>
     fun getFilteredProducts(
         categoryId: String?,
         subcategoryId: String?,
         minPrice: Double?,
         maxPrice: Double?
     ): Flow<Resource<List<ProductDto>>>
-    fun getProductsBySpecs(
-        categoryId: String?,
-        specFilters: Map<String, String> // For example: mapOf("Socket" to "AM4", "VRAM" to "8GB")
-    ): Flow<Resource<List<ProductDto>>>
     fun getProductById(productId: String): Flow<Resource<ProductDto?>>
-    suspend fun updateProductStock(productId: String, quantityChange: Int): Resource<Unit>
 }

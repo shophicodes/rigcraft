@@ -9,6 +9,5 @@ data class AddressDto(
     val phoneNumber: String = "",
     val street: String = "",
     val city: String = "",
-    val zip: String = "",
-    val isDefault: Boolean = false
+    val zip: String = ""
 )

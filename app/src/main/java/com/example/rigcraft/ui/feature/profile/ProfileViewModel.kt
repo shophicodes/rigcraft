@@ -53,12 +53,6 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun selectTab(index: Int) {
-        _uiState.update {
-            it.copy(selectedTab = index)
-        }
-    }
-
     fun updateName(newName: String) {
         viewModelScope.launch {
             val res = profileRepository.updateName(newName)
