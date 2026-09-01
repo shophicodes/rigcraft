@@ -26,6 +26,7 @@ class HomeViewModel @Inject constructor(
 
     init {
         loadHomeData()
+        seedMockData()
     }
 
     fun retry() {

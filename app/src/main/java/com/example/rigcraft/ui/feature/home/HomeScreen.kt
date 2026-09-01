@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -90,7 +91,7 @@ fun HomeScreen(
                 contentPadding = PaddingValues(horizontal = dimensionResource(R.dimen.padding_medium)),
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium))
             ) {
-                items(state.categories) { category ->
+                items(state.categories.filter { it.parentCategory == null }) { category ->
                     CategoryCarouselItem(category = category, onClick = onCategoryClick)
                 }
             }
@@ -151,33 +152,33 @@ fun CategoryCarouselItem(
     category: CategoryDto,
     onClick: (String) -> Unit
 ) {
-    if(category.parentCategory == null) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.clickable { onClick(category.categoryId) }
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(dimensionResource(R.dimen.category_item_size))
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer)
-                    .padding(dimensionResource(R.dimen.padding_small)),
-                contentAlignment = Alignment.Center
-            ) {
-                AsyncImage(
-                    model = category.imageUrl,
-                    contentDescription = category.name,
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier.fillMaxSize()
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.clickable { onClick(category.categoryId) }
+    ) {
+        Box(
+            modifier = Modifier
+                .size(dimensionResource(R.dimen.category_item_size))
+                .background(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_small))
                 )
-            }
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
-            Text(
-                text = category.name,
-                fontSize = with(LocalDensity.current) { dimensionResource(R.dimen.category_text_size).toSp() },
-                fontWeight = FontWeight.Medium
+                .padding(dimensionResource(R.dimen.padding_small)),
+            contentAlignment = Alignment.Center
+        ) {
+            AsyncImage(
+                model = category.imageUrl,
+                contentDescription = category.name,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize()
             )
         }
+        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.padding_extra_small)))
+        Text(
+            text = category.name,
+            fontSize = with(LocalDensity.current) { dimensionResource(R.dimen.category_text_size).toSp() },
+            fontWeight = FontWeight.Medium
+        )
     }
 }
 

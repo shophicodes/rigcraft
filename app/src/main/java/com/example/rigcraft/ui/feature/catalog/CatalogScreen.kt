@@ -66,13 +66,6 @@ fun CatalogScreen(
                                 showSortMenu = false
                             }
                         )
-                        DropdownMenuItem(
-                            text = { Text(stringResource(R.string.sort_highest_rated)) },
-                            onClick = {
-                                viewModel.updateSortOption(SortOption.HIGHEST_RATED)
-                                showSortMenu = false
-                            }
-                        )
                     }
                 }
             )

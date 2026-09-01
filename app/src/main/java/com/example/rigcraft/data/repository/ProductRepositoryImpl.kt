@@ -4,7 +4,6 @@ import com.example.rigcraft.data.model.CategoryDto
 import com.example.rigcraft.data.model.ProductDto
 import com.example.rigcraft.domain.repository.ProductRepository
 import com.example.rigcraft.util.Resource
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.Flow
@@ -66,22 +65,6 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    // Fetch products by category
-    override fun getProductsByCategory(categoryId: String): Flow<Resource<List<ProductDto>>> = flow {
-        emit(Resource.Loading)
-        try {
-            val snapshot = firestore.collection("products")
-                .whereEqualTo("categoryId", categoryId)
-                .get()
-                .await()
-            val products = snapshot.toObjects(ProductDto::class.java)
-            emit(Resource.Success(products))
-        }
-        catch (e: Exception) {
-            emit(Resource.Error(e.message ?: "Greška pri učitavanju proizvoda za kategoriju $categoryId"))
-        }
-    }
-
     // Filter products by category, subcategory, price (for all products)
     override fun getFilteredProducts(
         categoryId: String?,
@@ -116,36 +99,7 @@ class ProductRepositoryImpl @Inject constructor(
         }
     }
 
-    // Filter products within same category by specifications
-    override fun getProductsBySpecs(
-        categoryId: String?,
-        specFilters: Map<String, String>
-    ): Flow<Resource<List<ProductDto>>> = flow {
-        emit(Resource.Loading)
-        try {
-            var query: Query = firestore.collection("products")
-
-            if (!categoryId.isNullOrEmpty()) {
-                query = query.whereEqualTo("categoryId", categoryId)
-            }
-
-            // Query map fields dynamically using FieldPath
-            specFilters.forEach { (specKey, specValue) ->
-                if (specValue.isNotEmpty()) {
-                    query = query.whereEqualTo(FieldPath.of("specifications", specKey), specValue)
-                }
-            }
-
-            val snapshot = query.get().await()
-            val products = snapshot.toObjects(ProductDto::class.java)
-            emit(Resource.Success(products))
-        }
-        catch(e: Exception) {
-            emit(Resource.Error(e.message ?: "Greška pri učitavanju proizvoda filtriranih po specifikacijama"))
-        }
-    }
-
-    // Fetch product by its ID
+    // Fetch products by its ID
     override fun getProductById(productId: String): Flow<Resource<ProductDto?>> = flow {
         emit(Resource.Loading)
         try {
@@ -158,27 +112,6 @@ class ProductRepositoryImpl @Inject constructor(
         }
         catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Greška pri učitavanju proizvoda po ID-u"))
-        }
-    }
-
-    override suspend fun updateProductStock(productId: String, quantityChange: Int): Resource<Unit> {
-        return try {
-            val productRef = firestore.collection("products").document(productId)
-            firestore.runTransaction { transaction ->
-                val snapshot = transaction.get(productRef)
-                val currentStock = snapshot.getLong("stockQuantity") ?: 0L
-                val newStock = currentStock + quantityChange
-                
-                if (newStock < 0) {
-                    throw Exception("Nedovoljno proizvoda na stanju")
-                }
-                
-                transaction.update(productRef, "stockQuantity", newStock)
-                transaction.update(productRef, "inStock", newStock > 0)
-            }.await()
-            Resource.Success(Unit)
-        } catch (e: Exception) {
-            Resource.Error(e.message ?: "Greška pri ažuriranju zaliha")
         }
     }
 }

@@ -40,21 +40,13 @@ class WishlistViewModel @Inject constructor(
         }
     }
 
-    fun retry() {
-        loadWishlist()
-    }
-
     fun removeFromWishlist(productId: String) {
         viewModelScope.launch {
             try {
                 wishlistRepository.removeFromWishlist(productId)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _uiState.update { it.copy(errorMessage = "Greška pri uklanjanju proizvoda iz liste želja") }
             }
         }
-    }
-
-    fun clearError() {
-        _uiState.update { it.copy(errorMessage = null) }
     }
 }
