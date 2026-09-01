@@ -35,6 +35,7 @@ fun LoginScreen(
     LaunchedEffect(authState) {
         if (authState is Resource.Success) {
             viewModel.resetAuthState()
+            viewModel.updateLoginStatus(true)
             onNavigateToHome()
         }
     }
